@@ -44,7 +44,7 @@ export function getAIConfig(
     case AI_PROVIDERS.HUGGINGFACE:
       return {
         name: "Hugging Face",
-        apiKey: process.env.HUGGINGFACE_API_KEY || "hf_free", // Free tier
+        apiKey: process.env.HUGGINGFACE_API_KEY || "", // Remove hardcoded key
         endpoint:
           "https://api-inference.huggingface.co/models/microsoft/DialoGPT-large",
         model: "microsoft/DialoGPT-large",
@@ -54,20 +54,22 @@ export function getAIConfig(
         name: "Groq",
         apiKey: process.env.GROQ_API_KEY || "",
         endpoint: "https://api.groq.com/openai/v1/chat/completions",
-        model: "mixtral-8x7b-32768",
+        model: "llama3-8b-8192", // Updated to currently supported model
       };
     default:
-      return getAIConfig(AI_PROVIDERS.HUGGINGFACE); // Default to free option
+      return getAIConfig(AI_PROVIDERS.GROQ); // Default to GROQ instead of Hugging Face
   }
 }
 
 export async function callAI(
   prompt: string,
-  provider: AIProviderType = AI_PROVIDERS.HUGGINGFACE // Changed default to free
+  provider: AIProviderType = AI_PROVIDERS.GROQ // Changed default to GROQ
 ) {
   const config = getAIConfig(provider);
 
-  // Skip API key check for Hugging Face free tier
+  console.log(`Using ${config.name} provider for AI generation...`);
+
+  // Check for API key for providers that need it
   if (!config.apiKey && provider !== AI_PROVIDERS.HUGGINGFACE) {
     throw new Error(`${config.name} API key not configured`);
   }
@@ -84,7 +86,7 @@ export async function callAI(
     case AI_PROVIDERS.GROQ:
       return await callGroq(prompt, config);
     default:
-      return await callHuggingFace(prompt, config); // Default to free
+      return await callGroq(prompt, getAIConfig(AI_PROVIDERS.GROQ)); // Default to GROQ instead
       throw new Error(`Unsupported AI provider: ${provider}`);
   }
 }
@@ -181,283 +183,121 @@ async function callGoogleAI(prompt: string, config: AIProvider) {
   return data.candidates[0]?.content?.parts[0]?.text;
 }
 
-// Free Hugging Face API - No API key required
+// Free Hugging Face API - Using a better model for text generation
 async function callHuggingFace(prompt: string, config: AIProvider) {
-  // For completely free usage, we'll use a local/simple response
-  // Or you can use Hugging Face Inference API with free models
-
   try {
+    // Use the actual Hugging Face API endpoint
     const response = await fetch(
-      "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium",
+      "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // No API key needed for basic inference
+          // Only add auth header if we have a valid API key
+          ...(config.apiKey && !config.apiKey.startsWith("hf_")
+            ? {}
+            : config.apiKey && config.apiKey.startsWith("hf_")
+            ? { Authorization: `Bearer ${config.apiKey}` }
+            : {}),
         },
         body: JSON.stringify({
-          inputs: `You are a helpful English grammar teacher. Always respond with valid JSON format.\n\n${prompt}`,
+          inputs: prompt,
           parameters: {
-            max_length: 500,
-            temperature: 0.7,
+            max_new_tokens: 2000,
+            temperature: 0.9,
+            do_sample: true,
+            top_p: 0.95,
+            repetition_penalty: 1.2,
+            return_full_text: false,
+          },
+          options: {
+            wait_for_model: true,
+            use_cache: false,
           },
         }),
       }
     );
 
-    // If Hugging Face is down or rate limited, provide a fallback response
     if (!response.ok) {
-      return generateFallbackResponse(prompt);
+      const errorText = await response.text();
+      console.error("Hugging Face API error:", response.status, errorText);
+      throw new Error(`Hugging Face API error: ${response.status}`);
     }
 
     const data = await response.json();
-    return data[0]?.generated_text || generateFallbackResponse(prompt);
+
+    if (data.error) {
+      throw new Error(`Hugging Face API error: ${data.error}`);
+    }
+
+    const generatedText = data[0]?.generated_text || data.generated_text || "";
+
+    if (!generatedText) {
+      throw new Error("No text generated from Hugging Face API");
+    }
+
+    return generatedText;
   } catch (error) {
-    return generateFallbackResponse(prompt);
+    console.error("Hugging Face API failed:", error);
+    throw error;
   }
 }
 
 // Groq API - Free tier available
 async function callGroq(prompt: string, config: AIProvider) {
-  const response = await fetch(config.endpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${config.apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: config.model,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a helpful English grammar teacher. Always respond with valid JSON format.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      max_tokens: 1000,
-      temperature: 0.7,
-    }),
-  });
+  try {
+    const response = await fetch(config.endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: config.model,
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a helpful English grammar teacher. Always respond with valid JSON format.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        max_tokens: 2000, // Increased for longer responses
+        temperature: 0.8, // Higher for more creativity
+        top_p: 0.9,
+        stream: false,
+      }),
+    });
 
-  if (!response.ok) {
-    throw new Error(`Groq API error: ${response.status}`);
-  }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Groq API error details:", errorText);
 
-  const data = await response.json();
-  return data.choices[0]?.message?.content;
-}
+      let errorMessage = `Groq API error: ${response.status}`;
+      try {
+        const errorData = JSON.parse(errorText);
+        if (errorData.error?.message) {
+          errorMessage += ` - ${errorData.error.message}`;
+        }
+      } catch {
+        // If we can't parse the error, just use the status
+      }
 
-// Fallback function for completely offline/free usage
-function generateFallbackResponse(prompt: string): string {
-  if (prompt.includes('action": "fix"')) {
-    return JSON.stringify({
-      corrected: "I went to the store yesterday.",
-      errors: [
-        {
-          original: "I have went",
-          corrected: "I went",
-          explanation:
-            "Use simple past tense 'went' instead of present perfect with incorrect past participle.",
-        },
-      ],
-    });
-  } else if (prompt.includes("fill-in-blank")) {
-    return JSON.stringify({
-      exercise: {
-        title: "Grammar Exercise: Fill in the Blank",
-        type: "fill-in-blank",
-        questions: [
-          {
-            id: 1,
-            question: "I _____ to the store yesterday.",
-            correct: "went",
-            explanation:
-              "Use simple past tense 'went' for completed actions in the past.",
-            type: "fill-in-blank",
-          },
-          {
-            id: 2,
-            question: "She _____ her homework before dinner.",
-            correct: "finished",
-            explanation: "Use past tense 'finished' for completed actions.",
-            type: "fill-in-blank",
-          },
-          {
-            id: 3,
-            question: "They _____ playing soccer when it started raining.",
-            correct: "were",
-            explanation:
-              "Use past continuous 'were' with the -ing form for ongoing past actions.",
-            type: "fill-in-blank",
-          },
-        ],
-      },
-    });
-  } else if (prompt.includes("sentence-completion")) {
-    return JSON.stringify({
-      exercise: {
-        title: "Grammar Exercise: Sentence Completion",
-        type: "sentence-completion",
-        questions: [
-          {
-            id: 1,
-            question: "Although it was raining heavily, we decided to...",
-            correct: "go outside anyway",
-            explanation:
-              "This sentence needs a contrasting conclusion to complete the thought.",
-            type: "sentence-completion",
-          },
-          {
-            id: 2,
-            question: "If I had more time, I would...",
-            correct: "learn a new language",
-            explanation:
-              "This conditional sentence requires a main clause with 'would'.",
-            type: "sentence-completion",
-          },
-        ],
-      },
-    });
-  } else if (prompt.includes("error-correction")) {
-    return JSON.stringify({
-      exercise: {
-        title: "Grammar Exercise: Error Correction",
-        type: "error-correction",
-        questions: [
-          {
-            id: 1,
-            question: "Find and correct the grammar error in this sentence:",
-            incorrectText: "I have went to the store yesterday.",
-            correct: "I went to the store yesterday.",
-            explanation:
-              "Use simple past tense with time expressions like 'yesterday', not present perfect.",
-            type: "error-correction",
-          },
-          {
-            id: 2,
-            question: "Find and correct the grammar error in this sentence:",
-            incorrectText: "She don't like chocolate.",
-            correct: "She doesn't like chocolate.",
-            explanation:
-              "Use 'doesn't' with third person singular subjects, not 'don't'.",
-            type: "error-correction",
-          },
-        ],
-      },
-    });
-  } else if (prompt.includes("reading-comprehension")) {
-    return JSON.stringify({
-      exercise: {
-        title: "Reading Comprehension Exercise",
-        type: "reading-comprehension",
-        questions: [
-          {
-            id: 1,
-            question: "What is the main topic of the passage?",
-            passage:
-              "Learning English grammar can be challenging, but it becomes easier with practice. Regular exercises help students understand the rules and apply them correctly. The key is to start with basic concepts and gradually move to more complex structures.",
-            options: [
-              "A) English is difficult",
-              "B) Practice makes grammar easier",
-              "C) Complex structures are hard",
-              "D) Students need help",
-            ],
-            correct: 1,
-            explanation:
-              "The passage emphasizes that grammar becomes easier with practice.",
-            type: "reading-comprehension",
-          },
-        ],
-      },
-    });
-  } else if (prompt.includes("word-order")) {
-    return JSON.stringify({
-      exercise: {
-        title: "Word Order Exercise",
-        type: "word-order",
-        questions: [
-          {
-            id: 1,
-            question: "Arrange these words to make a correct sentence:",
-            words: ["yesterday", "went", "I", "store", "to", "the"],
-            correct: "I went to the store yesterday.",
-            explanation:
-              "English follows Subject + Verb + Object + Time order.",
-            type: "word-order",
-          },
-          {
-            id: 2,
-            question: "Arrange these words to make a correct sentence:",
-            words: ["always", "homework", "does", "she", "her"],
-            correct: "She always does her homework.",
-            explanation: "Adverbs of frequency go before the main verb.",
-            type: "word-order",
-          },
-        ],
-      },
-    });
-  } else if (prompt.includes("matching")) {
-    return JSON.stringify({
-      exercise: {
-        title: "Matching Exercise",
-        type: "matching",
-        questions: [
-          {
-            id: 1,
-            question: "Match the verbs with their past tense forms:",
-            pairs: [
-              { left: "go", right: "went" },
-              { left: "eat", right: "ate" },
-              { left: "see", right: "saw" },
-            ],
-            correct: "1a, 2b, 3c",
-            explanation:
-              "These are irregular past tense forms that must be memorized.",
-            type: "matching",
-          },
-        ],
-      },
-    });
-  } else {
-    return JSON.stringify({
-      exercise: {
-        title: "Grammar Exercise: Past Tense",
-        type: "multiple-choice",
-        questions: [
-          {
-            id: 1,
-            question: "Which sentence uses the correct past tense?",
-            options: [
-              "A) I have went to the store",
-              "B) I went to the store",
-              "C) I have go to the store",
-              "D) I goes to the store",
-            ],
-            correct: 1,
-            explanation:
-              "Simple past tense 'went' is correct for completed actions in the past.",
-            type: "multiple-choice",
-          },
-          {
-            id: 2,
-            question: "Choose the correct past tense form:",
-            options: [
-              "A) She have eaten lunch",
-              "B) She has ate lunch",
-              "C) She ate lunch",
-              "D) She have ate lunch",
-            ],
-            correct: 2,
-            explanation:
-              "Simple past tense 'ate' is correct for completed past actions.",
-            type: "multiple-choice",
-          },
-        ],
-      },
-    });
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error("Invalid response format from Groq API");
+    }
+
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error("Groq API call failed:", error);
+    throw error;
   }
 }

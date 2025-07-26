@@ -1,4 +1,12 @@
 // Simple test to verify AI integration
+
+// Extend the Window interface to include our custom function
+declare global {
+  interface Window {
+    testGrammarAPI: typeof testGrammarAPI;
+  }
+}
+
 async function testGrammarAPI() {
   const testData = {
     text: "I have went to the store yesterday",
@@ -40,7 +48,7 @@ async function testGrammarAPI() {
 
 // Export for use in browser console or testing
 if (typeof window !== "undefined") {
-  (window as any).testGrammarAPI = testGrammarAPI;
+  window.testGrammarAPI = testGrammarAPI;
 }
 
 export { testGrammarAPI };
