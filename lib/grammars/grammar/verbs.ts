@@ -1,4 +1,6 @@
-export const VerbsData = {
+import { VerbsType } from "@/types/grammars/grammar/verbs";
+
+export const VerbsData: VerbsType = {
   definition:
     "Verbs are words that describe actions, states, or occurrences. They are essential elements in English grammar that express what subjects do, feel, or experience.",
   types: {

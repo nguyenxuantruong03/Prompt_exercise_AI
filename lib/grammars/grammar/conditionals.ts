@@ -1,4 +1,6 @@
-export const ConditionalsData = {
+import { ConditionalsType } from "@/types/grammars/grammar/conditionals";
+
+export const ConditionalsData: ConditionalsType = {
   "Zero Conditional": {
     level: "A2-B1",
     difficulty: "Beginner to Intermediate",

@@ -1,4 +1,6 @@
-export const NounsData = {
+import { NounsType } from "@/types/grammars/grammar/nouns";
+
+export const NounsData:NounsType = {
   definition:
     "Nouns are words that name people, places, things, ideas, or concepts.",
 

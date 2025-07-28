@@ -61,6 +61,7 @@ export interface SpecialStructure {
 export interface ComplexStructure {
   description: string;
   structure?: string;
+  example?: string;
   examples?: string[];
 }
 

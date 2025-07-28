@@ -19,93 +19,110 @@ export const tenseDatabase: TensesStructure = {
   Reported_Speech: tenses.ReportedSpeechData,
   Relative_Clauses: tenses.RelativeClausesData,
   Nouns: tenses.NounsData,
-  PluralOnlyNouns: tenses.PluralOnlyNounsData,
   Pronouns: tenses.PronounsData,
   Verbs: tenses.VerbsData,
-  
+  Adjective: tenses.AdjectiveData,
+  AdjectiveOrder: tenses.AdjectiveOrderData,
+  Adverb: tenses.AdverbData,
+  Articles: tenses.ArticlesData,
+  CausativeForm: tenses.CausativeFormData,
+  Comparative: tenses.ComparativeData,
+  Comparisons: tenses.ComparisonsData,
+  Conjunctions: tenses.ConjunctionsData,
+  Determiners: tenses.DeterminersData,
+  DirectAndIndirectSpeech: tenses.DirectAndIndirectSpeechData,
+  DiscourseMarkers: tenses.DiscourseMarkersData,
+  DoubleComparative: tenses.DoubleComparativeData,
+  EllipsisAndSubstitution: tenses.EllipsisAndSubstitutionData,
+  Emphasis: tenses.EmphasisData,
+  EqualityComparison: tenses.EqualityComparisonData,
+  FocusStructures: tenses.FocusStructuresData,
+  FutureInThePast: tenses.FutureInThePastData,
+  GerundsAndInfinitives: tenses.GerundsAndInfinitivesData,
+  Hedging: tenses.HedgingData,
+  IdiomaticLanguage: tenses.IdiomaticLanguageData,
+  Imperatives: tenses.ImperativesData,
+  Infinitives: tenses.InfinitivesData,
+  Interjections: tenses.InterjectionsData,
+  Inversion: tenses.InversionData,
+  ModalVerbs: tenses.ModalVerbsData,
+  Negation: tenses.NegationData,
+  Nominalisation: tenses.NominalisationData,
+  PassiveVoice: tenses.PassiveVoiceData,
+  PhrasalVerbs: tenses.PhrasalVerbsData,
+  Possessives: tenses.PossessivesData,
+  Preposition: tenses.PrepositionData,
+  Quantifiers: tenses.QuantifiersData,
+  QuestionForms: tenses.QuestionFormsData,
+  ReflexivePronouns: tenses.ReflexivePronounsData,
+  RepeatedComparative: tenses.RepeatedComparativeData,
+  ReportedQuestions: tenses.ReportedQuestionsData,
+  SentenceTypes: tenses.SentenceTypesData,
+  SubjectVerbAgreement: tenses.SubjectVerbAgreementData,
+  SubjunctiveMood: tenses.SubjunctiveMoodData,
+  Superlative: tenses.SuperlativeData,
+  TagQuestions: tenses.TagQuestionsData,
+  TenseConsistency: tenses.TenseConsistencyData,
+  TenseShiftInReportedSpeech: tenses.TenseShiftInReportedSpeechData,
+  TimeExpressions: tenses.TimeExpressionsData,
+  WordFormationSentences: tenses.WordFormationSentencesData,
+  WordOrder: tenses.WordOrderData,
+  adjectivesNoComparison: tenses.adjectivesNoComparisonData,
+  adjectivesUsedAsNouns: tenses.adjectivesUsedAsNounsData,
+  adjectivesWithPluralNouns: tenses.adjectivesWithPluralNounsData,
+  compoundAdjectives: tenses.compoundAdjectivesData,
+  emotionAdjectives: tenses.emotionAdjectivesData,
+  possessiveAndEmphaticAdjectives: tenses.possessiveAndEmphaticAdjectivesData,
+  postpositiveAdjectives: tenses.postpositiveAdjectivesData,
+  quantitativeAdjectives: tenses.quantitativeAdjectivesData,
+  specialPositionAdjectives: tenses.specialPositionAdjectivesData,
+  adverbFrontingInversion: tenses.adverbFrontingInversionData,
+  adverbPositionMeaningChange: tenses.adverbPositionMeaningChangeData,
+  adverbsEndingLyVsIdenticalAdjectives:
+    tenses.adverbsEndingLyVsIdenticalAdjectivesData,
+  adverbsInversionAndEmphasis: tenses.adverbsInversionAndEmphasisData,
+  adverbsNotEndingLy: tenses.adverbsNotEndingLyData,
+  adverbsOfCertainty: tenses.adverbsOfCertaintyData,
+  adverbsOfFrequency: tenses.adverbsOfFrequencyData,
+  degreeAdverbs: tenses.degreeAdverbsData,
+  emphasizingAdverbs: tenses.emphasizingAdverbsData,
+  linkingAdverbs: tenses.linkingAdverbsData,
 
-  // Adjectives: ,
-
-  // Adverbs: ,
-  // Prepositions: ,
-  // Conjunctions: ,
-
-  // Interjections: ,
-
-  // Determiners: ,
-
-  // Comparative: ,
-
-  // Superlative: ,
-
-  // EqualityComparison: ,
-
-  // DoubleComparative: ,
-
-  // RepeatedComparative: ,
-
-  // SubjectVerbAgreement:,
-
-  // AdjectiveOrder: ,
-
-  // Infinitives: ,
-
-  // WordFormationSentences: ,
-
-  // SubjunctiveMood: ,
-
-  // Articles: ,
-
-  // ModalVerbs: ,
-
-  // PassiveVoice: ,
-
-  // CausativeForm: ,
-
-  // QuestionForms: ,
-
-  // Imperatives: ,
-
-  // GerundsAndInfinitives: ,
-
-  // WordOrder: ,
-
-  // Quantifiers:,
-
-  // Comparisons: ,
-
-  // Negation: ,
-
-  // EllipsisAndSubstitution: ,
-
-  // TagQuestions: ,
-
-  // Inversion: ,
-
-  // DirectAndIndirectSpeech: ,
-
-  // TimeExpressions:,
-
-  // TenseConsistency: ,
-
-  // CountableAndUncountableNouns: ,
-
-  // Possessives:,
-
-  // ReflexivePronouns:,
-
-  // ReportedQuestions: ,
-
-  // SentenceTypes: ,
-
-  // TenseShiftInReportedSpeech: ,
-
-  // FutureInThePast: ,
-  // Emphasis: ,
-  // Nominalisation: ,
-  // Hedging: ,
-  // DiscourseMarkers: ,
-  // FocusStructures: ,
-  // IdiomaticLanguage: ,
-  // PhrasalVerbs: ,
+  expressingAgreementDisagreementSuggestionsRequestsResponses:
+    tenses.expressingAgreementDisagreementSuggestionsRequestsResponsesData,
+  politeVsDirectLanguage: tenses.politeVsDirectLanguageData,
+  transitionPhrasesAcademicWriting: tenses.transitionPhrasesAcademicWritingData,
+  advancedConditionals: tenses.advancedConditionalsData,
+  adverbialClauseAdvanced: tenses.adverbialClauseAdvancedData,
+  binomials: tenses.binomialsData,
+  cleftSentences: tenses.cleftSentencesData,
+  collocations: tenses.collocationsDatabaseData,
+  emphaticCleftSentences: tenses.emphaticCleftSentencesData,
+  fixedExpressions: tenses.fixedExpressionsData,
+  nounClauseGrammar: tenses.nounClauseGrammarData,
+  parallelStructuresData: tenses.parallelStructuresData,
+  purposeResultConditionClauses: tenses.purposeResultConditionClausesData,
+  reducedRelativeClauses: tenses.reducedRelativeClausesData,
+  verbToVOrVingAdvanced: tenses.verbToVOrVingAdvancedData,
+  abstractNouns: tenses.abstractNounsData,
+  CollectiveNouns: tenses.CollectiveNounsData,
+  CountableVsUncountableNouns: tenses.CountableVsUncountableNounsData,
+  DualUsageNouns: tenses.DualUsageNounsData,
+  irregularPlurals: tenses.irregularPluralsData,
+  PluralOnlyNouns: tenses.PluralOnlyNounsData,
+  pluraliaTantum: tenses.pluraliaTantumData,
+  singularOnlyNouns: tenses.singularOnlyNounsData,
+  singulariaTantum: tenses.singulariaTantumData,
+  uncountableNouns: tenses.uncountableNounsData,
+  CausativeVerbs: tenses.CausativeVerbsData,
+  infinitivePatterns: tenses.infinitivePatternsData,
+  IrregularVerbs: tenses.IrregularVerbsData,
+  LinkingVerbs: tenses.LinkingVerbsData,
+  PerceptionVerbs: tenses.PerceptionVerbsData,
+  phrasalVerbs: tenses.phrasalVerbsData,
+  ReflexiveVerbs: tenses.ReflexiveVerbsData,
+  ReportingVerbs: tenses.ReportingVerbsData,
+  StatisticVerbs: tenses.StatisticVerbsData,
+  transitiveIntransitiveVerbs: tenses.transitiveIntransitiveVerbsData,
+  VerbsOfPerception: tenses.VerbsOfPerceptionData,
 };

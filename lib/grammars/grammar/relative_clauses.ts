@@ -1,4 +1,6 @@
-export const RelativeClausesData = {
+import { RelativeClausesType } from "@/types/grammars/grammar/relative_clauses";
+
+export const RelativeClausesData:RelativeClausesType = {
   level: "A2-C2",
   difficulty: {
     A2: "Basic defining relative clauses with who, which, that",

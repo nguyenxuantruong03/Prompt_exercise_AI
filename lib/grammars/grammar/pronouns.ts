@@ -1,4 +1,6 @@
-export const PronounsData = {
+import { PronounsType } from "@/types/grammars/grammar/pronouns";
+
+export const PronounsData:PronounsType = {
   definition:
     "Pronouns are words used to replace nouns to avoid repetition and make sentences clearer.",
   types: {

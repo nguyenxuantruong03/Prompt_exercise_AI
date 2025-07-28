@@ -1,4 +1,6 @@
-export const ReportedSpeechData = {
+import { ReportedSpeechType } from "@/types/grammars/grammar/reported_speech";
+
+export const ReportedSpeechData:ReportedSpeechType = {
   level: "A2-C2",
   complexity: "Advanced",
   cefrLevels: {
