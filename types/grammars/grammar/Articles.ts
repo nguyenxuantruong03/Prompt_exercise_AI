@@ -66,6 +66,7 @@ export interface ArticleSpecialUsage {
 }
 
 export interface ArticlesType {
+  id: number;
   articlesDefinition: ArticleDefinition;
   A1: ArticleLevel;
   A2: ArticleLevel;

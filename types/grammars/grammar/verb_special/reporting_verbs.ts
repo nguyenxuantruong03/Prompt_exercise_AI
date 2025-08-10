@@ -1,4 +1,5 @@
 export interface ReportingVerbsType {
+  id: number;
   definition: {
     general: string;
     grammatical_function: string;

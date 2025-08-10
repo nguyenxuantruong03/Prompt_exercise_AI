@@ -1,4 +1,5 @@
 export interface adjectivesUsedAsNounsType {
+  id: number;
   // Core definition and concept
   adjectivesUsedAsNounsDefinition: {
     concept: string;

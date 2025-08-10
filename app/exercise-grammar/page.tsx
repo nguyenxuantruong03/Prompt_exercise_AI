@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import TabNavigation from "./components/tab-navigation";
-import InputSection from "./components/input-secttion";
-import ExerciseGrammarComponents from "./components/exercise";
+import InputSection from "./components/shared/type-exercise-level/input-secttion";
+import ExerciseGrammarComponents from "./components/shared/exercise/exercise";
 import FixReuslt from "./components/fix-result";
-import LevelEquivalencyModal from "./components/level-equivalency_modal";
-import ShowExerciseModal from "./components/show-exercise-modal";
-import TenseInfoPanel from "./components/tense-Info-panel";
+import LevelEquivalencyModal from "./components/shared/type-exercise-level/level-equivalency_modal";
+import ShowExerciseModal from "./components/shared/exercise/components/show-exercise-modal";
+import TenseInfoPanel from "./components/shared/tenses-auto-search/tenses-Info-panel";
+import TenseInfoModal from "./components/shared/tenses-auto-search/tenses-info-modal";
+import { Button } from "@/components/ui/button";
 import {
   CEFRLevel,
   Exercise,
@@ -17,13 +19,26 @@ import {
   UserSocerType,
 } from "@/types/grammars/grammars_type";
 import { toast } from "react-hot-toast";
-import ChartComponent from "./components/chart-analytics";
-import MiniExerciseSuggestion from "./components/mini-exercise-suggestion";
-import LevelSelection from "./components/level-selection";
+import ChartComponent from "./components/shared/chart-analytics/chart-analytics";
+import MiniExerciseSuggestion from "./components/shared/exercise/components/mini-exercise-suggestion";
+import LevelSelection from "./components/shared/type-exercise-level/level-selection";
 import ScoreAnalysisModal from "./components/score-analysis-modal";
 import LoadingAIGenerate from "@/components/loading-AI-Generate";
+import HintTenses, {
+  TenseItem,
+} from "./components/shared/hint-tenses/hint-tenses";
+import * as React from "react"
+import { Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const ExerciseGrammar = () => {
+  const { setTheme } = useTheme()
   const [inputText, setInputText] = useState("");
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [fixResult, setFixResult] = useState<FixResponse | null>(null);
@@ -60,6 +75,20 @@ const ExerciseGrammar = () => {
     useState(false);
   const [miniExerciseSuggestion, setMiniExerciseSuggestion] =
     useState<MiniExerciseSuggestionType | null>(null);
+
+  // NEW: Add state for auto grammar analysis
+  const [autoAnalyzeEnabled, setAutoAnalyzeEnabled] = useState(false);
+
+  // Add state for tense information modal
+  const [tenseModalData, setTenseModalData] = useState<{
+    isOpen: boolean;
+    tenseName: string;
+    tenseData: TenseItem | null;
+  }>({
+    isOpen: false,
+    tenseName: "",
+    tenseData: null,
+  });
 
   const handleSuggestionClick = (suggestion: string) => {
     setInputText(suggestion);
@@ -189,6 +218,8 @@ const ExerciseGrammar = () => {
     setShowDownloadOptions(false);
     setShowSuggestions(false);
     setNumExercises(5);
+    // Reset auto-analysis when resetting the exercise
+    setAutoAnalyzeEnabled(false);
   };
 
   return (
@@ -196,13 +227,33 @@ const ExerciseGrammar = () => {
       <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">
         AI Grammar Exercise Generator
       </h1>
-
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+            <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setTheme("light")}>
+            Light
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("dark")}>
+            Dark
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("system")}>
+            System
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       {/* Tense Information Panel - Fixed position in left corner */}
       {exercise && (
         <TenseInfoPanel
           showTenseInfo={showTenseInfo}
           setShowTenseInfo={setShowTenseInfo}
           exercise={exercise}
+          setTenseModalData={setTenseModalData}
         />
       )}
 
@@ -236,6 +287,8 @@ const ExerciseGrammar = () => {
         numExercises={numExercises}
         setNumExercises={setNumExercises}
         resetExercise={resetExercise}
+        autoAnalyzeEnabled={autoAnalyzeEnabled}
+        setAutoAnalyzeEnabled={setAutoAnalyzeEnabled}
       />
 
       {/* Exercise Display */}
@@ -263,6 +316,7 @@ const ExerciseGrammar = () => {
           setUserScore={setUserScore}
           setMiniExerciseSuggestion={setMiniExerciseSuggestion}
           inputText={inputText}
+          autoAnalyzeEnabled={autoAnalyzeEnabled}
         />
       )}
 
@@ -310,18 +364,18 @@ const ExerciseGrammar = () => {
       />
 
       {/* Floating Chart Analytics Button */}
-      <button
+      <Button
         onClick={() => setShowChartAnalytics(true)}
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-40 group"
+        className="h-14 fixed bottom-6 right-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-30 group"
         title="View Grammar Mistake Analytics"
       >
         <div className="flex items-center gap-2">
-          <span className="text-2xl">📊</span>
+          <span className="text-xl">📊</span>
           <span className="hidden group-hover:block text-sm font-medium whitespace-nowrap">
             Analytics
           </span>
         </div>
-      </button>
+      </Button>
 
       {/* Mini Exercise Suggestion Modal */}
       {showMiniExerciseSuggestion && miniExerciseSuggestion && (
@@ -341,6 +395,29 @@ const ExerciseGrammar = () => {
           numExercises={numExercises}
         />
       )}
+
+      {/* Tense Information Modal */}
+      {tenseModalData.isOpen && (
+        <TenseInfoModal
+          isOpen={tenseModalData.isOpen}
+          tenseName={tenseModalData.tenseName}
+          onClose={() =>
+            setTenseModalData({ isOpen: false, tenseName: "", tenseData: null })
+          }
+          onBackToPanel={() => {
+            setTenseModalData({
+              isOpen: false,
+              tenseName: "",
+              tenseData: null,
+            });
+            setShowTenseInfo(true);
+          }}
+        />
+      )}
+
+      <HintTenses />
+
+      {/* Hint Tenses Component */}
     </div>
   );
 };

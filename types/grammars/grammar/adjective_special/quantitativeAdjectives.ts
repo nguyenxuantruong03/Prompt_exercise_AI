@@ -1,4 +1,5 @@
 export interface quantitativeAdjectivesType {
+  id: number;
   topic: string;
   definition: string;
   vietnameseDefinition: string;

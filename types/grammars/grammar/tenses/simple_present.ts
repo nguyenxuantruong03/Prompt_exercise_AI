@@ -3,6 +3,7 @@ import { Citation } from "../grammar_type";
 
 // Simple Present interface - completely separate
 export interface SimplePresentType {
+  id: number;
   citations?: Citation[];
   theory?: {
     usageOverview?: string[];

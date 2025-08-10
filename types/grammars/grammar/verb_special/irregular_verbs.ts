@@ -1,4 +1,5 @@
 export interface IrregularVerbsType {
+  id: number;
   definition: {
     simple: string;
     detailed: string;

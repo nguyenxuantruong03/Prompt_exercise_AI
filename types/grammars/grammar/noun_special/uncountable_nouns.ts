@@ -1,4 +1,5 @@
 export interface uncountableNounsType {
+  id: number;
   definition: {
     core_concept: string;
     grammatical_status: string;
@@ -226,7 +227,9 @@ export interface uncountableNounsType {
   specialCases: {
     [caseType: string]: {
       description: string;
-      examples: Array<any>;
+      examples: Array<
+        string | { word: string; countable: string; uncountable: string }
+      >;
     };
   };
 

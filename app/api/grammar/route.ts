@@ -44,6 +44,47 @@ interface ScoreData {
   incorrectQuestions: IncorrectQuestion[];
 }
 
+interface AIQuestionResponse {
+  question?: string;
+  text?: string;
+  prompt?: string;
+  sentence?: string;
+  sentence1?: string;
+  sentence2?: string;
+  sentence3?: string;
+  sentence4?: string;
+  stem?: string;
+  passage?: string;
+  context?: string;
+  instructions?: string;
+  options?: string[];
+  correct?: number | string;
+  explanation?: string;
+  tip?: string;
+  tense?: string;
+  incorrectText?: string;
+  words?: string[];
+  pairs?: Array<{ left: string; right: string }>;
+}
+
+interface RequestBody {
+  sentence2?: string;
+  sentence3?: string;
+  sentence4?: string;
+  stem?: string;
+  passage?: string;
+  context?: string;
+  instructions?: string;
+  options?: string[];
+  correct?: number | string;
+  explanation?: string;
+  tip?: string;
+  tense?: string;
+  incorrectText?: string;
+  words?: string[];
+  pairs?: Array<{ left: string; right: string }>;
+}
+
 interface RequestBody {
   text?: string;
   action: ActionType;
@@ -52,6 +93,7 @@ interface RequestBody {
   numExercises?: number;
   provider?: string; // Keep as string since it comes from request body
   scoreData?: ScoreData;
+  detailedAnalysis?: boolean; // Add this flag for detailed grammar analysis
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -65,6 +107,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       numExercises = 5,
       provider = AI_PROVIDERS.GROQ,
       scoreData,
+      detailedAnalysis = false,
     } = body;
 
     // Validate and convert provider string to AIProviderType
@@ -202,6 +245,52 @@ TIPS AND SUGGESTIONS REQUIREMENTS:
 - Provide memory aids or rules that help students remember the correct usage
 - Make tips educational and informative, not just simple explanations
 - Ensure tips are appropriate for ${proficiencyLevel} level understanding
+
+${
+  detailedAnalysis && ["A1", "A2", "B1", "B2"].includes(proficiencyLevel)
+    ? `DETAILED GRAMMAR ANALYSIS REQUIREMENT:
+Since detailed analysis is enabled for this ${proficiencyLevel} student, you must ALSO generate 2-3 sample sentences that clearly demonstrate "${grammarText}" grammar with detailed word-by-word grammatical analysis.
+
+For each sample sentence, identify and mark every significant grammatical element with precise positions:
+- Subject: The person/thing performing the action
+- Verb: Action words or state of being verbs
+- Object: Person/thing receiving the action
+- Article: a, an, the
+- Quantifier: some, many, few, much, little, etc.
+- Adjective: Descriptive words modifying nouns
+- Adverb: Words that modify verbs, adjectives, or other adverbs
+- Preposition: in, on, at, by, with, etc.
+- Modal: can, could, should, must, will, would, etc.
+- Auxiliary: helping verbs (do, does, did, have, has, had, be, am, is, are, was, were)
+- Conjunction: and, but, or, because, although, etc.
+- Pronoun: I, you, he, she, it, they, we, etc.
+
+ANALYSIS FORMAT REQUIREMENT: Add this section to your JSON response alongside the questions:
+"sentenceAnalyses": [
+  {
+    "sentence": "Complete example sentence clearly demonstrating ${grammarText} usage",
+    "elements": [
+      {
+        "word": "exact word from sentence",
+        "startIndex": 0,
+        "endIndex": 4,
+        "type": "subject|verb|object|article|quantifier|adjective|adverb|preposition|modal|auxiliary|conjunction|pronoun",
+        "explanation": "Clear explanation of why this word serves this grammatical function in the context of ${grammarText}",
+        "level": "${proficiencyLevel}",
+        "additionalInfo": "Helpful learning tips specifically for ${proficiencyLevel} level students about this grammatical element"
+      }
+    ]
+  }
+]
+
+CRITICAL: Make sure to:
+- Generate 2-3 different sentences that showcase different aspects of "${grammarText}"
+- Mark word positions accurately (startIndex/endIndex)
+- Provide ${proficiencyLevel}-appropriate explanations
+- Focus on elements most relevant to understanding "${grammarText}"
+`
+    : ""
+}
 
 OUTPUT: Valid JSON only, no other text.`;
 
@@ -676,7 +765,7 @@ USER PERFORMANCE DATA:
 INCORRECT QUESTIONS ANALYSIS:
 ${scoreData.incorrectQuestions
   .map(
-    (item: any, index: number) => `
+    (item: IncorrectQuestion, index: number) => `
 ${index + 1}. Question: ${item.question}
    User Answer: ${item.userAnswer}
    Correct Answer: ${item.correctAnswer}
@@ -717,14 +806,14 @@ Provide personalized, constructive analysis that helps the user improve their En
         try {
           parsedAnalysis = JSON.parse(analysisResult);
         } catch (parseError) {
-          console.log("Failed to parse AI analysis as JSON, using fallback");
+          console.log("error parsing analysis result:", parseError);
           // Fallback if JSON parsing fails
           parsedAnalysis = {
             weakAreas: scoreData.incorrectQuestions
-              .map((item: any) => item.tense || item.type)
+              .map((item: IncorrectQuestion) => item.tense || item.type || "")
               .filter(
-                (area: any, index: number, arr: any[]) =>
-                  arr.indexOf(area) === index
+                (area: string, index: number, arr: string[]) =>
+                  area && arr.indexOf(area) === index
               )
               .slice(0, 5),
             feedback: `You scored ${scoreData.correct}/${scoreData.total} (${
@@ -780,6 +869,7 @@ Provide personalized, constructive analysis that helps the user improve their En
     try {
       parsedResponse = JSON.parse(aiResponse);
     } catch (parseError) {
+      console.log("error parsing analysis result:", parseError);
       // If JSON parsing fails, try to extract JSON from the response
       const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
@@ -799,7 +889,7 @@ Provide personalized, constructive analysis that helps the user improve their En
       const generateFallbackOptions = (
         exerciseType: string,
         grammarTopic: string,
-        questionData: any,
+        questionData: AIQuestionResponse,
         index: number
       ): string[] => {
         console.log(
@@ -812,36 +902,33 @@ Provide personalized, constructive analysis that helps the user improve their En
           case "multiple-choice":
             return generateMultipleChoiceOptions(grammarTopic, questionData);
           case "cloze-test":
-            return generateClozeOptions(grammarTopic, questionData);
+            return generateClozeOptions(grammarTopic);
           case "transformation":
-            return generateTransformationOptions(grammarTopic, questionData);
+            return generateTransformationOptions(grammarTopic);
           case "paraphrasing":
-            return generateParaphrasingOptions(grammarTopic, questionData);
+            return generateParaphrasingOptions(grammarTopic);
           case "sentence-combining":
-            return generateSentenceCombiningOptions(grammarTopic, questionData);
+            return generateSentenceCombiningOptions(grammarTopic);
           case "reading-comprehension":
-            return generateReadingComprehensionOptions(
-              grammarTopic,
-              questionData
-            );
+            return generateReadingComprehensionOptions(grammarTopic);
           case "verb-conjugation":
-            return generateVerbConjugationOptions(grammarTopic, questionData);
+            return generateVerbConjugationOptions();
           case "word-formation":
-            return generateWordFormationOptions(grammarTopic, questionData);
+            return generateWordFormationOptions();
           case "dialogue-completion":
-            return generateDialogueOptions(grammarTopic, questionData);
+            return generateDialogueOptions(grammarTopic);
           case "punctuation":
-            return generatePunctuationOptions(grammarTopic, questionData);
+            return generatePunctuationOptions();
           case "sentence-building":
-            return generateSentenceBuildingOptions(grammarTopic, questionData);
+            return generateSentenceBuildingOptions(grammarTopic);
           default:
-            return generateGenericOptions(grammarTopic, questionData);
+            return generateGenericOptions(grammarTopic);
         }
       };
 
       const generateMultipleChoiceOptions = (
         topic: string,
-        q: any
+        q: AIQuestionResponse
       ): string[] => {
         const grammarForms = getGrammarForms(topic, proficiencyLevel);
         if (grammarForms.length >= 4) {
@@ -849,7 +936,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
 
         // Generate level-appropriate contextual options based on proficiency level
-        const questionText = q.question || q.text || "";
+        const questionText = (q.question || q.text || "") as string;
 
         // Level-specific option generation
         if (proficiencyLevel === "A1") {
@@ -902,7 +989,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateClozeOptions = (topic: string, q: any): string[] => {
+      const generateClozeOptions = (topic: string): string[] => {
         const grammarForms = getGrammarForms(topic, proficiencyLevel);
         if (grammarForms.length >= 4) {
           return grammarForms.slice(0, 4);
@@ -920,10 +1007,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateTransformationOptions = (
-        topic: string,
-        q: any
-      ): string[] => {
+      const generateTransformationOptions = (topic: string): string[] => {
         if (proficiencyLevel === "A1" || proficiencyLevel === "A2") {
           return [
             `Simple transformation using ${topic}`,
@@ -948,7 +1032,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateParaphrasingOptions = (topic: string, q: any): string[] => {
+      const generateParaphrasingOptions = (topic: string): string[] => {
         if (proficiencyLevel === "A1" || proficiencyLevel === "A2") {
           return [
             `Simple paraphrase with ${topic}`,
@@ -973,10 +1057,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateSentenceCombiningOptions = (
-        topic: string,
-        q: any
-      ): string[] => {
+      const generateSentenceCombiningOptions = (topic: string): string[] => {
         if (proficiencyLevel === "A1" || proficiencyLevel === "A2") {
           return [
             `Simply combined using ${topic}`,
@@ -1001,10 +1082,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateReadingComprehensionOptions = (
-        topic: string,
-        q: any
-      ): string[] => {
+      const generateReadingComprehensionOptions = (topic: string): string[] => {
         if (proficiencyLevel === "A1" || proficiencyLevel === "A2") {
           return [
             `Basic understanding of ${topic}`,
@@ -1029,10 +1107,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateVerbConjugationOptions = (
-        topic: string,
-        q: any
-      ): string[] => {
+      const generateVerbConjugationOptions = (): string[] => {
         // Level-appropriate verb forms
         if (proficiencyLevel === "A1") {
           return ["is", "are", "was", "were"];
@@ -1052,10 +1127,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateWordFormationOptions = (
-        topic: string,
-        q: any
-      ): string[] => {
+      const generateWordFormationOptions = (): string[] => {
         if (proficiencyLevel === "A1" || proficiencyLevel === "A2") {
           return [
             "correctly formed word",
@@ -1080,7 +1152,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateDialogueOptions = (topic: string, q: any): string[] => {
+      const generateDialogueOptions = (topic: string): string[] => {
         if (proficiencyLevel === "A1" || proficiencyLevel === "A2") {
           return [
             `Simple ${topic} response`,
@@ -1105,7 +1177,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generatePunctuationOptions = (topic: string, q: any): string[] => {
+      const generatePunctuationOptions = (): string[] => {
         if (proficiencyLevel === "A1" || proficiencyLevel === "A2") {
           return [
             "Correctly punctuated",
@@ -1130,10 +1202,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateSentenceBuildingOptions = (
-        topic: string,
-        q: any
-      ): string[] => {
+      const generateSentenceBuildingOptions = (topic: string): string[] => {
         if (proficiencyLevel === "A1" || proficiencyLevel === "A2") {
           return [
             `Simply built using ${topic}`,
@@ -1158,7 +1227,7 @@ Provide personalized, constructive analysis that helps the user improve their En
         }
       };
 
-      const generateGenericOptions = (topic: string, q: any): string[] => {
+      const generateGenericOptions = (topic: string): string[] => {
         if (proficiencyLevel === "A1" || proficiencyLevel === "A2") {
           return [
             `Basic ${topic} usage`,
@@ -1300,7 +1369,7 @@ Provide personalized, constructive analysis that helps the user improve their En
       const transformedExercise = {
         ...parsedResponse.exercise,
         questions: parsedResponse.exercise.questions.map(
-          (q: any, index: number) => {
+          (q: AIQuestionResponse, index: number) => {
             // Convert letter-based correct answers (a, b, c, d) to numbers (0, 1, 2, 3)
             let correctAnswer = q.correct;
             if (typeof correctAnswer === "string") {
@@ -1450,7 +1519,7 @@ Provide personalized, constructive analysis that helps the user improve their En
             // Additional validation: ensure options are meaningful strings
             if (finalOptions && finalOptions.length > 0) {
               finalOptions = finalOptions.map(
-                (option: any, optIndex: number) => {
+                (option: unknown, optIndex: number) => {
                   if (
                     !option ||
                     typeof option !== "string" ||
@@ -1471,7 +1540,9 @@ Provide personalized, constructive analysis that helps the user improve their En
             // Ensure correct answer is within valid range
             if (
               finalOptions.length > 0 &&
-              (correctAnswer >= finalOptions.length || correctAnswer < 0)
+              (typeof correctAnswer !== "number" ||
+                correctAnswer >= finalOptions.length ||
+                correctAnswer < 0)
             ) {
               console.warn(
                 `⚠️ Invalid correct answer index ${correctAnswer} for question ${
@@ -1497,17 +1568,18 @@ Provide personalized, constructive analysis that helps the user improve their En
               options: finalOptions,
               correct: correctAnswer,
               explanation:
-                q.explanation || `This tests ${grammarText} grammar rules.`,
+                (q.explanation as string) ||
+                `This tests ${grammarText} grammar rules.`,
               tip:
-                q.tip ||
+                (q.tip as string) ||
                 `Grammar tip: This question tests ${grammarText}. Review the rules for when and how to use ${grammarText} correctly.`,
-              tense: q.tense || null, // Include the tense field from AI response
+              tense: (q.tense as string) || null, // Include the tense field from AI response
               type: exerciseType,
               // Optional fields for different exercise types
-              passage: q.passage,
-              incorrectText: q.incorrectText,
-              words: q.words,
-              pairs: q.pairs,
+              passage: q.passage as string,
+              incorrectText: q.incorrectText as string,
+              words: q.words as string[],
+              pairs: q.pairs as Array<{ left: string; right: string }>,
             };
           }
         ),

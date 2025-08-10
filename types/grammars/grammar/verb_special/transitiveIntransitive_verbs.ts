@@ -1,4 +1,5 @@
 export interface transitiveIntransitiveVerbsType {
+  id: number;
   topic: string;
   levels: string[];
 

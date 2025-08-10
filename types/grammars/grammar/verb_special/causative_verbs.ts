@@ -1,4 +1,5 @@
 export interface CausativeVerbsType {
+  id: number;
   definition: {
     simple: string;
     extended: string;

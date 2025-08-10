@@ -1,4 +1,5 @@
 export interface ComparativeType {
+  id: number;
   // Academic References and Sources
   academicReferences: {
     primarySources: Array<{

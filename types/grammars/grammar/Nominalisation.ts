@@ -1,4 +1,5 @@
 export interface NominalisationType {
+  id: number;
   // Definition and Core Concepts
   nominalisationDefinition: {
     concept: string;

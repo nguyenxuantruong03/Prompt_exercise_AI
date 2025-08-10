@@ -1,4 +1,5 @@
 export interface VerbsOfPerceptionType {
+  id: number;
   definition: {
     core_concept: string;
     grammatical_role: string;

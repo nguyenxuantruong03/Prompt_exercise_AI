@@ -104,6 +104,7 @@ interface creativeTechniques {
 }
 
 export interface EmphasisType {
+  id: number;
   // Core emphasis definition and importance
   emphasisDefinition: {
     concept: string;

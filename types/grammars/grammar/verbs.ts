@@ -1,4 +1,5 @@
 export interface VerbsType {
+  id: number;
   definition: string;
   types: {
     actionVerbs: {

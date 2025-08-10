@@ -1,4 +1,5 @@
 export interface politeVsDirectLanguageType {
+  id: number;
   topic: string;
   levels: string[];
   description: string;

@@ -1,4 +1,5 @@
 export interface FutureInThePastType {
+  id: number;
   // Core Definition and Importance
   futureInThePastDefinition: {
     concept: string;

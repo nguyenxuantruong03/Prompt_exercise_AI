@@ -1,4 +1,5 @@
 export interface CausativeFormType {
+  id: number;
   causativeFormDefinition: {
     concept: string;
     importance: string;

@@ -1,4 +1,5 @@
 export interface PronounsType {
+  id: number;
   definition: string;
   types: {
     personal: {

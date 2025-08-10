@@ -59,7 +59,7 @@ export default function Home() {
               <div>
                 <p className="font-semibold">Test the Free AI</p>
                 <p>
-                  Click "Test OpenAI API Key" above to test the free grammar
+                  Click Test OpenAI API Key above to test the free grammar
                   functionality
                 </p>
               </div>

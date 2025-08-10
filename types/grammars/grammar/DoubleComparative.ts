@@ -1,4 +1,5 @@
 export interface DoubleComparativeType {
+  id: number;
   doubleComparativeDefinition: {
     basicDefinition: string;
     grammaticalFunction: string;

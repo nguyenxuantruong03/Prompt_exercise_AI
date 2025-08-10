@@ -1,4 +1,5 @@
 export interface adverbsEndingLyVsIdenticalAdjectivesType {
+  id: number;
   topic: string;
   level: string;
   description: string;

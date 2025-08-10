@@ -1,4 +1,14 @@
+// Extended categories type with flexible nested structure
+interface ExtendedCategoryValue {
+  [key: string]: string[] | ExtendedCategoryValue;
+}
+
+interface ProfessionalTerminologyValue {
+  [key: string]: string[] | string | ProfessionalTerminologyValue;
+}
+
 export interface PluralOnlyNounsType {
+  id: number;
   plural_only_comprehensive: {
     definition: {
       core_concept: string;
@@ -242,7 +252,7 @@ export interface PluralOnlyNounsType {
     };
   };
   extended_categories: {
-    [category: string]: any;
+    [category: string]: ExtendedCategoryValue;
   };
   linguistic_patterns: {
     compound_plurals: {
@@ -275,7 +285,7 @@ export interface PluralOnlyNounsType {
     };
   };
   professional_terminology: {
-    [field: string]: any;
+    [field: string]: ProfessionalTerminologyValue;
   };
   references_and_sources: {
     academic_books: {

@@ -2,6 +2,7 @@ import { Citation } from "../grammar_type";
 
 // Future Continuous interface - completely separate
 export interface FutureContinuousType {
+  id: number;
   citations?: Citation[];
   theory?: {
     usageOverview?: string[];

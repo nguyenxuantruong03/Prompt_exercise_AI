@@ -1,4 +1,5 @@
 export interface DualUsageNounsType {
+  id: number;
   definition: {
     core_concept: string;
     grammatical_status: string;

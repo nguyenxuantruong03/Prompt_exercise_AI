@@ -1,4 +1,5 @@
 export interface EllipsisAndSubstitutionType {
+  id: number;
   // Definition and Core Concepts
   ellipsisAndSubstitutionDefinition: {
     concept: string;

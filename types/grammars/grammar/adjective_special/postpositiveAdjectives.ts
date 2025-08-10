@@ -1,4 +1,5 @@
 export interface postpositiveAdjectivesType {
+  id: number;
   topic: string;
   level: string;
   definition: string;

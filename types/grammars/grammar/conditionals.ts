@@ -1,4 +1,5 @@
 export interface ConditionalsType {
+  id: number;
   "Zero Conditional": ZeroConditionalType;
   "First Conditional": FirstConditionalType;
   "Second Conditional": SecondConditionalType;

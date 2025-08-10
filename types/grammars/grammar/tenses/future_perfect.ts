@@ -2,6 +2,7 @@ import { Citation } from "../grammar_type";
 
 // Future Perfect interface - completely separate
 export interface FuturePerfectType {
+  id: number;
   citations?: Citation[];
   theory?: {
     usageOverview?: string[];

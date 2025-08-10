@@ -128,6 +128,7 @@ export interface SuperlativeModifiers {
 }
 
 export interface SuperlativeClauseType {
+  
   examples: string[];
   usage: string;
 }
@@ -237,6 +238,7 @@ export interface SuperlativeFullLevelDetails {
 
 
 export interface SuperlativeType {
+  id: number;
   superlativeDefinition: {
     basicDefinition: string;
     grammaticalFunction: string;

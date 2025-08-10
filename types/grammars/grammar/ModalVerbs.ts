@@ -1,4 +1,5 @@
 interface ModalVerbsType {
+  id: number;
   // Definition section
   modalVerbsDefinition: {
     concept: string;

@@ -374,6 +374,7 @@ export interface ContextualMastery {
 
 // Main DeterminersType interface
 export interface DeterminersType {
+  id: number;
   // Core definition and references
   determinerDefinition: DeterminerDefinition;
 

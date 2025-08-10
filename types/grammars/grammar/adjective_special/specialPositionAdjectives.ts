@@ -1,4 +1,5 @@
 export interface specialPositionAdjectivesType {
+  id: number;
   topic: string;
   levels: string[];
   definition: string;
@@ -98,7 +99,12 @@ interface MainCategory {
 interface SpecialCase {
   rule: string;
   description?: string;
-  examples: any[];
+  examples:
+    | {
+        attributive: string;
+        predicative: string;
+      }[]
+    | string[];
   notes?: string;
   level?: string;
   explanation?: string;
@@ -141,7 +147,10 @@ interface IdiomaticPhrase {
 
 interface Exception {
   description: string;
-  examples: any[];
+  examples: {
+    attributive: string;
+    predicative: string;
+  }[];
   notes?: string;
   level?: string;
 }

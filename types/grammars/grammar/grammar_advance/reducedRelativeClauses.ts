@@ -1,4 +1,5 @@
 export interface reducedRelativeClausesType {
+  id: number;
   title: string;
   definition: string;
   overview: string;

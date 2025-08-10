@@ -2,6 +2,7 @@ import { Citation } from "../grammar_type";
 
 // Simple Future interface - completely separate
 export interface SimpleFutureType {
+  id: number;
   citations?: Citation[];
   theory?: {
     usageOverview?: string[];

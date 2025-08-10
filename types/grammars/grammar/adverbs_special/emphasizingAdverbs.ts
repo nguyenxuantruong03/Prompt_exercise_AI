@@ -1,4 +1,5 @@
 export interface emphasizingAdverbsType {
+  id: number;
   topic: string;
   vietnameseTopic: string;
   level: string;

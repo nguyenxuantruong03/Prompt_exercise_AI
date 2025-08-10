@@ -185,6 +185,7 @@ export interface CommonTimeExpressionMistakes {
 }
 
 export interface TimeExpressionsType {
+  id: number;
   timeExpressionsDefinition: {
     concept: string;
     importance: string;

@@ -1,4 +1,5 @@
 export interface PossessivesType {
+  id: number;
   // Definition and References
   possessivesDefinition: {
     concept: string;

@@ -1,4 +1,5 @@
 export interface FuturePerfectContinuousType {
+  id: number;
   level: string;
   difficulty: string;
   cefrLevel: {

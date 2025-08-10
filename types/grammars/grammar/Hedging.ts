@@ -1,4 +1,5 @@
 export interface HedgingType {
+  id: number;
   definition: string;
   purpose: string[];
   levels: {

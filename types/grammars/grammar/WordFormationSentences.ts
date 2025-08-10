@@ -1,4 +1,5 @@
 export interface WordFormationSentencesType {
+  id: number;
   // Core definition and concept
   wordFormationSentencesDefinition: {
     concept: string;

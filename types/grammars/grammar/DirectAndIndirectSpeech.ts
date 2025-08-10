@@ -56,6 +56,7 @@ interface LevelContent {
   }
   
   export interface DirectAndIndirectSpeechType {
+    id: number;
     directAndIndirectSpeechDefinition: {
       concept: string;
       importance: string;

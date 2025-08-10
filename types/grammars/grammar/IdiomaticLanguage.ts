@@ -1,4 +1,5 @@
 export interface IdiomaticLanguageType {
+  id: number;
   definition: string;
   purpose: string[];
   levels: {

@@ -1,4 +1,5 @@
 export interface QuestionFormsType {
+  id: number;
   // Definition section
   questionFormsDefinition: {
     concept: string;

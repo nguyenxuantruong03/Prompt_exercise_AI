@@ -187,6 +187,7 @@ export interface TenseShiftsInTests {
 }
 
 export interface TenseShiftInReportedSpeechType {
+  id: number;
   // General definition and scope
   tenseShiftInReportedSpeechDefinition: {
     concept: string;

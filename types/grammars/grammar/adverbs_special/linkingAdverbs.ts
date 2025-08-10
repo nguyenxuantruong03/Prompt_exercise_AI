@@ -1,4 +1,5 @@
 export interface linkingAdverbsType {
+  id: number;
   topic: string;
   definition: string;
   vietnameseDefinition: string;

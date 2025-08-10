@@ -110,6 +110,7 @@ export interface Collocation {
 }
 
 export interface emotionAdjectivesType {
+  id: number;
   category: string;
   topic: string;
   levels: string[];

@@ -1,4 +1,5 @@
 export interface PassiveVoiceType {
+  id: number;
   // Core definition and importance
   passiveVoiceDefinition: {
     concept: string;

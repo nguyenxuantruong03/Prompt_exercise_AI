@@ -2,6 +2,7 @@ import { Citation } from "../grammar_type";
 
 // Past Perfect Continuous interface - completely separate
 export interface PastPerfectContinuousType {
+  id: number;
   citations?: Citation[];
   theory?: {
     usageOverview?: string[];

@@ -1,4 +1,5 @@
 export interface adjectivesNoComparisonType {
+  id: number;
   // Core definition and concept
   adjectivesNoComparisonDefinition: {
     concept: string;

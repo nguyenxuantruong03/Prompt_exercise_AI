@@ -1,4 +1,5 @@
 export interface ReflexivePronounsType {
+  id: number;
   // Core definition and importance
   reflexivePronounsDefinition: {
     concept: string;

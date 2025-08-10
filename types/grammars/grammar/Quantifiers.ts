@@ -1,4 +1,5 @@
 export interface QuantifiersType {
+  id: number;
   // Definition and Core Concepts
   quantifiersDefinition: {
     concept: string;

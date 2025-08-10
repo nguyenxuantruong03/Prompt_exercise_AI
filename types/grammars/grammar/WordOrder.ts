@@ -1,4 +1,5 @@
 export interface WordOrderType {
+  id: number;
   // Core definition and concept
   wordOrderDefinition: {
     concept: string;

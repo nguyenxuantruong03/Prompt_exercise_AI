@@ -1,4 +1,5 @@
 export interface collocationsType {
+  id: number;
   topic: string;
   level: string;
   definition: string;

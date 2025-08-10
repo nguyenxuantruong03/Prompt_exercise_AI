@@ -1,4 +1,5 @@
 export interface PhrasalVerbsType {
+  id: number;
   definition: string;
   purpose: string[];
   levels: {

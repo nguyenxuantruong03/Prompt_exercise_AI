@@ -2,6 +2,7 @@ import { Citation } from "../grammar_type";
 
 // Simple Past interface - completely separate
 export interface SimplePastType {
+  id: number;
   citations?: Citation[];
   theory?: {
     usageOverview?: string[];

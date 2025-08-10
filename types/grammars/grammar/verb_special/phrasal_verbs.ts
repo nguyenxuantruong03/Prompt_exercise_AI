@@ -58,6 +58,7 @@ export interface Reference {
 }
 
 export interface phrasalVerbsType {
+  id: number;
   definition: {
     core_concept: string;
     grammatical_status: string;

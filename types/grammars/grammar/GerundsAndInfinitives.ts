@@ -1,4 +1,5 @@
 export interface GerundsAndInfinitivesType {
+  id: number;
   // Core Definition and Importance
   gerundsAndInfinitivesDefinition: {
     concept: string;

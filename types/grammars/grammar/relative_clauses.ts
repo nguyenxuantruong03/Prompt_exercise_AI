@@ -1,4 +1,5 @@
 export interface RelativeClausesType{
+  id: number;
   level: string;
   difficulty: {
     A2: string;

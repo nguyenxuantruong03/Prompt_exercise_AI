@@ -2,6 +2,7 @@ import { Citation } from "../grammar_type";
 
 // Past Perfect interface - completely separate
 export interface PastPerfectType {
+  id: number;
   citations?: Citation[];
   theory?: {
     usageOverview?: string[];

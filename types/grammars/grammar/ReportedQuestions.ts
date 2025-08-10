@@ -1,4 +1,5 @@
 export interface ReportedQuestionsType {
+  id: number;
   // Comprehensive Reported Questions Reference
   reportedQuestionsDefinition: {
     concept: string;

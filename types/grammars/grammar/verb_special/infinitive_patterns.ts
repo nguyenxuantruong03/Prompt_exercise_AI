@@ -1,4 +1,5 @@
 export interface infinitivePatternsType {
+  id: number;
   topic: string;
   level: string;
   definition: string;

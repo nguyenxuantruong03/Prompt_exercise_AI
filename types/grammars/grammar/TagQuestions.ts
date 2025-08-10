@@ -1,4 +1,5 @@
 export interface TagQuestionsType {
+  id: number;
   // Definition of Tag Questions
   tagQuestionsDefinition: {
     concept: string;

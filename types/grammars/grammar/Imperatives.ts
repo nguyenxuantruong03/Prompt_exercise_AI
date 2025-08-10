@@ -1,4 +1,5 @@
 export interface ImperativesType {
+  id: number;
   // Definition and Learning Resources
   imperativesDefinition: {
     concept: string;

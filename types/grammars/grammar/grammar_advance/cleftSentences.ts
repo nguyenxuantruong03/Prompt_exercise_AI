@@ -1,4 +1,5 @@
 export interface cleftSentencesType {
+  id: number;
   definition: string;
   etymology?: string;
   purpose: string[];

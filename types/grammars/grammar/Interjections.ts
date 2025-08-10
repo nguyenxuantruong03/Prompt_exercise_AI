@@ -1,4 +1,5 @@
 export interface InterjectionsType {
+  id: number;
   // Definition and Overview
   interjectionDefinition: {
     basicDefinition: string;

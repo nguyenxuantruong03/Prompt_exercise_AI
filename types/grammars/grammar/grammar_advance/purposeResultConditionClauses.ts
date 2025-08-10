@@ -1,4 +1,5 @@
 export interface purposeResultConditionClausesType {
+  id: number;
   title: string;
   definition: string;
   overview: {

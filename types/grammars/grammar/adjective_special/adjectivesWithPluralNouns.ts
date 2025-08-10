@@ -116,6 +116,7 @@ export interface RegisterGenreConsiderations {
 }
 
 export interface adjectivesWithPluralNounsType {
+  id: number;
   // Core definition and concept
   adjectivesWithPluralNounsDefinition: {
     concept: string;

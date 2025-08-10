@@ -174,6 +174,7 @@ export interface References {
 }
 
 export interface ConjunctionsType {
+  id: number;
   conjunctionDefinition: ConjunctionDefinition;
   A1: LeveledConjunctionData;
   A2: LeveledConjunctionData;

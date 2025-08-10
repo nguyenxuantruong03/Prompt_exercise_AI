@@ -163,6 +163,7 @@ export interface AdverbGenreUsage {
 }
 
 export interface AdverbType {
+  id: number;
   adverbDefinition: AdverbDefinition;
   A1: AdverbLevel;
   A2: AdverbLevel;

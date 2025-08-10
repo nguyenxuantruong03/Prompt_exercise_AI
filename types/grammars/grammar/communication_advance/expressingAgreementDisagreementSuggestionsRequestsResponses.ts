@@ -40,6 +40,7 @@ export interface CommunicationFunction {
 }
 
 export interface expressingAgreementDisagreementSuggestionsRequestsResponsesType {
+  id: number;
   overview: {
     title: string;
     description: string;

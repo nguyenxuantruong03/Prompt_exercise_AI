@@ -55,6 +55,7 @@ export interface Reference {
 }
 
 export interface verbToVOrVingAdvancedType {
+  id: number;
   topic: string;
   level: string;
   description: string;

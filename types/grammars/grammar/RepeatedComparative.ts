@@ -1,4 +1,5 @@
 export interface RepeatedComparativeType {
+  id: number;
   // Comprehensive Repeated Comparative Reference
   repeatedComparativeDefinition: {
     basicDefinition: string;

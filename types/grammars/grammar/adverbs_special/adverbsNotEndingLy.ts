@@ -1,4 +1,5 @@
 export interface adverbsNotEndingLyType {
+  id: number;
   title: string;
   definition: string;
 

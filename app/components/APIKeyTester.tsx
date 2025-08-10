@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function APIKeyTester() {
   const [testing, setTesting] = useState(false);
@@ -72,7 +73,7 @@ export default function APIKeyTester() {
         required!
       </p>
 
-      <button
+      <Button
         onClick={testAPIKey}
         disabled={testing}
         className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -85,7 +86,7 @@ export default function APIKeyTester() {
         ) : (
           "Test Free AI Grammar"
         )}
-      </button>
+      </Button>
 
       {result && (
         <div className="mt-4 p-4 rounded-lg text-sm">

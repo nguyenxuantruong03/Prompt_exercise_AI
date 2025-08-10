@@ -147,6 +147,7 @@ export interface Reference {
 }
 
 export interface adverbsInversionAndEmphasisType {
+  id: number;
   title: string;
   description: string;
   definition: {

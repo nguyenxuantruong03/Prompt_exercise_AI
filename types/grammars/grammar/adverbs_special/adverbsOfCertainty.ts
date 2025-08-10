@@ -82,6 +82,7 @@ export interface Reference {
 }
 
 export interface adverbsOfCertaintyType {
+  id: number;
   name: string;
   definition: string;
   comprehensive_overview: {

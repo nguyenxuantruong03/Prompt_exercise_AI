@@ -1,4 +1,6 @@
 export interface compoundAdjectivesType {
+  id: number;
+
   // Core Definition and Concept
   compoundAdjectivesDefinition: {
     concept: string;

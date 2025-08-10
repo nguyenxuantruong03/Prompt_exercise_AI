@@ -1,4 +1,5 @@
 export interface NounsType {
+  id: number;
   definition: string;
 
   usage?: {

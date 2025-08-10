@@ -18,7 +18,6 @@ interface AdjectiveSection {
   definition: string;
   examples?: string[];
   usage?: string;
-  [key: string]: any; // Allow for additional properties specific to each section
 }
 
 interface AssessmentCriteria {
@@ -263,6 +262,7 @@ interface ProficiencyAdjectiveLevel {
 }
 
 export interface AdjectiveType {
+  id: number;
   adjectiveDefinition: {
     basicDefinition: string;
     detailedDefinition: string;

@@ -1,4 +1,5 @@
 export interface adverbPositionMeaningChangeType {
+  id: number;
   A1: {
     description: string;
     examples: Array<{

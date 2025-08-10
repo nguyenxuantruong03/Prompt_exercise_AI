@@ -1,5 +1,6 @@
 // Comprehensive TypeScript interface for Reported Speech grammar structure
 export interface ReportedSpeechType{
+  id: number;
   level: string;
   complexity: string;
   cefrLevels: {

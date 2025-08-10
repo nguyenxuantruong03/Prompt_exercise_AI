@@ -1,4 +1,5 @@
 export interface adverbFrontingInversionType {
+  id: number;
   topic: string;
   description: string;
 

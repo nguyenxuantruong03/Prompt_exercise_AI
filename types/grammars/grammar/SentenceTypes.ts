@@ -1,4 +1,5 @@
 export interface SentenceTypesType {
+  id: number;
   // Main definition and references
   sentenceTypesDefinition: {
     concept: string;

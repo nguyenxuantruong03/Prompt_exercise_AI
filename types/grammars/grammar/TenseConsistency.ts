@@ -234,6 +234,7 @@ export interface TenseConsistencyLevels {
 
 
 export interface TenseConsistencyType {
+  id: number;
   tenseConsistencyDefinition: {
     concept: string;
     importance: string;

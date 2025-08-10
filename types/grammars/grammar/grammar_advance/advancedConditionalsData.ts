@@ -1,4 +1,5 @@
 export interface advancedConditionalsType {
+  id: number;
   title: string;
   overview: string;
 

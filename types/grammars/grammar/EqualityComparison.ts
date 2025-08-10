@@ -1,4 +1,5 @@
 export interface EqualityComparisonType {
+  id: number;
   // Core definition and characteristics
   equalityComparisonDefinition: {
     basicDefinition: string;

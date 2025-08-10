@@ -1,4 +1,5 @@
 export interface ComparisonsType {
+  id: number;
   comparisonsDefinition: {
     basicDefinition: string;
     linguisticDefinition: string;

@@ -1,4 +1,5 @@
 export interface PrepositionType {
+  id: number;
   // Definition and basic structure
   prepositionDefinition: {
     basicDefinition: string;

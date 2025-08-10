@@ -1,4 +1,5 @@
 export interface SubjunctiveMoodType {
+  id: number;
   // Definition and Core Concepts
   subjunctiveMoodDefinition: {
     concept: string;

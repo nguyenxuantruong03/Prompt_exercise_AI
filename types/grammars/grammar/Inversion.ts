@@ -1,4 +1,5 @@
 export interface InversionType {
+  id: number;
   // Comprehensive Inversion Reference
   inversionDefinition: {
     concept: string;

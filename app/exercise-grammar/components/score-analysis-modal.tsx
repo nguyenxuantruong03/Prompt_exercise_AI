@@ -2,6 +2,7 @@ import {
   MiniExerciseSuggestionType,
   UserSocerType,
 } from "@/types/grammars/grammars_type";
+import { Button } from "@/components/ui/button";
 
 interface ScoreAnalysisModalProps {
   setShowScoreAnalysis: (show: boolean) => void;
@@ -45,12 +46,14 @@ const ScoreAnalysisModal: React.FC<ScoreAnalysisModalProps> = ({
                 Your detailed score report and improvement recommendations
               </p>
             </div>
-            <button
+            <Button
               onClick={() => setShowScoreAnalysis(false)}
+              variant="ghost"
+              size="icon"
               className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl"
             >
               ×
-            </button>
+            </Button>
           </div>
 
           {/* Score Overview */}
@@ -253,15 +256,15 @@ const ScoreAnalysisModal: React.FC<ScoreAnalysisModalProps> = ({
           <div className="flex gap-3 justify-end">
             {/* NEW: Improvement button - only show if there are mini exercise suggestions */}
             {miniExerciseSuggestion && miniExerciseSuggestion.shouldSuggest && (
-              <button
+              <Button
                 onClick={handleShowImprovement}
                 className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 transition-colors"
               >
                 <span>🚀</span>
                 Get Improvement Plan
-              </button>
+              </Button>
             )}
-            <button
+            <Button
               onClick={() => {
                 // Generate practice exercises for weak areas
                 if (userScore.weakAreas.length > 0) {
@@ -272,14 +275,15 @@ const ScoreAnalysisModal: React.FC<ScoreAnalysisModalProps> = ({
               className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
             >
               Practice Weak Areas
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
               onClick={() => setShowScoreAnalysis(false)}
               className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
             >
               Close
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => {
                 // Reset for new exercise
                 setShowScoreAnalysis(false);
@@ -288,7 +292,7 @@ const ScoreAnalysisModal: React.FC<ScoreAnalysisModalProps> = ({
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
               Try New Exercise
-            </button>
+            </Button>
           </div>
         </div>
       </div>

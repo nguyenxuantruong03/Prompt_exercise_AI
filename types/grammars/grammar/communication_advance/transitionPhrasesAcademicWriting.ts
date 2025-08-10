@@ -49,6 +49,7 @@ export interface Reference {
 }
 
 export interface transitionPhrasesAcademicWritingType {
+  id: number;
   topic: string;
   description: string;
   academic_definition: string;

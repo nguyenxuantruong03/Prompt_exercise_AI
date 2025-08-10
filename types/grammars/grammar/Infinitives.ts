@@ -1,4 +1,5 @@
 export interface InfinitivesType {
+  id: number;
   // Comprehensive Infinitives Reference
   infinitivesDefinition: {
     concept: string;

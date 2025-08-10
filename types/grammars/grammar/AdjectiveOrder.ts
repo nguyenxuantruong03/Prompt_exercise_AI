@@ -1,4 +1,5 @@
 export interface AdjectiveOrderType {
+  id: number;
   // Core Definition and Theoretical Foundation
   adjectiveOrderDefinition: {
     concept: string;

@@ -79,6 +79,7 @@ interface PedagogicalApproach {
 }
 
 export interface irregularPluralsType {
+  id: number;
   definition: DefinitionStructure;
 
   // CEFR Level-based Learning Structure

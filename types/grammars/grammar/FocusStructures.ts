@@ -1,4 +1,5 @@
 export interface FocusStructuresType {
+  id: number;
   definition: string;
   purpose: string[];
   levels: {

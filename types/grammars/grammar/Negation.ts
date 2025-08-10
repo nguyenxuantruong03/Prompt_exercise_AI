@@ -1,4 +1,5 @@
 export interface NegationType {
+  id: number;
   // Comprehensive Negation Reference
   negationDefinition: {
     concept: string;

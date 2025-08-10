@@ -1,4 +1,5 @@
 export interface DiscourseMarkersType {
+  id: number;
   definition: string;
   extendedDefinition: string;
   academicDefinition: string;
