@@ -9,6 +9,7 @@ import {
   extractGrammarFocus,
 } from "./suggestionsDetail";
 import QuestionRenderer from "../QuestionRenderer";
+import ComparisonQuestion from "../comparison-question";
 import { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -36,6 +37,7 @@ interface QuestionItemProps {
     SetStateAction<{ [key: number]: number | string }>
   >;
   handleSuggestionClick: (suggestionText: string) => void;
+  onLightningQuestionComplete?: () => void; // For lightning game
 }
 
 const QuestionItem: React.FC<QuestionItemProps> = ({
@@ -58,6 +60,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({
   setInputText,
   setSelectedAnswers,
   handleSuggestionClick,
+  onLightningQuestionComplete,
 }) => {
   return (
     <div
@@ -171,13 +174,25 @@ const QuestionItem: React.FC<QuestionItemProps> = ({
       )}
 
       {/* Question Content */}
-      <QuestionRenderer
-        question={question}
-        selectedAnswers={selectedAnswers}
-        showResults={showResults}
-        handleAnswerSelect={handleAnswerSelect}
-        handleInputAnswer={handleInputAnswer}
-      />
+      {question.type === "comparison-exercise" ? (
+        <ComparisonQuestion
+          question={question}
+          showResults={showResults}
+          selectedAnswer={selectedAnswers[question.id]}
+          onAnswerSelect={(answer) => handleAnswerSelect(question.id, answer)}
+          showHint={showHints[question.id] || false}
+          onToggleHint={() => toggleHint(question.id)}
+        />
+      ) : (
+        <QuestionRenderer
+          question={question}
+          selectedAnswers={selectedAnswers}
+          showResults={showResults}
+          handleAnswerSelect={handleAnswerSelect}
+          handleInputAnswer={handleInputAnswer}
+          onQuestionComplete={onLightningQuestionComplete}
+        />
+      )}
 
       {/* Results Section */}
       {showResults && (

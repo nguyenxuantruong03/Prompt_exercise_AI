@@ -248,9 +248,9 @@ export const useScoreCalculator = () => {
         percentage: scoreData.percentage,
         weakAreas,
         estimatedScores,
-        feedback: `You scored ${scoreData.correct}/${scoreData.total} (${
-          scoreData.percentage
-        }%). ${
+        feedback: `You got ${scoreData.correct} right / ${
+          scoreData.total - scoreData.correct
+        } wrong (${scoreData.percentage}%). ${
           scoreData.percentage >= 80
             ? "Excellent work!"
             : scoreData.percentage >= 60

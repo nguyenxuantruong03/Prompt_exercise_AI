@@ -645,7 +645,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ isOpen, onClose }) => {
                 <Button
                   key={key}
                   onClick={() => setSelectedChart(key as ChartType)}
-                  className={`p-4 rounded-xl text-left transition-all duration-300 border-2 ${
+                  className={`p-4 h-full block whitespace-normal rounded-xl text-left transition-all duration-300 border-2 ${
                     selectedChart === key
                       ? `bg-gradient-to-br ${config.color} text-white border-transparent shadow-lg scale-105`
                       : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-md"

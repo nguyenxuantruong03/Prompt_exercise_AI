@@ -11,6 +11,154 @@ export interface Question {
   incorrectText?: string; // For error correction
   words?: string[]; // For word order exercises
   pairs?: { left: string; right: string }[]; // For matching exercises
+  // For comparison exercises
+  comparisonStructures?: {
+    structure1: string;
+    structure2: string;
+    examples: {
+      structure1Example: string;
+      structure2Example: string;
+    };
+  };
+  // For context-matching exercises
+  context?: {
+    situation: string; // The real-world context/scenario
+    timeframe: string; // When this situation occurs (past, present, future, etc.)
+    formality: "formal" | "informal" | "neutral"; // Level of formality required
+    purpose: string; // What the speaker is trying to achieve
+    grammarChoices: Array<{
+      structure: string;
+      appropriateness: "perfect" | "acceptable" | "inappropriate";
+      reason: string;
+    }>;
+  };
+  // For passive-active matching exercises
+  voicePairs?: Array<{
+    active: string;
+    passive: string;
+    tense: string;
+  }>;
+  // For clause combining exercises
+  clauses?: Array<{
+    mainClause: string;
+    subordinateClause: string;
+    connector: string;
+    combinedSentence: string;
+  }>;
+  // For multi-topic integration exercises
+  grammarTopics?: string[]; // Array of grammar topics being tested
+  topicWeights?: { [topic: string]: number }; // Relative importance of each topic in the question
+  // For form conversion exercises
+  originalSentence?: string; // The base sentence to be converted
+  targetForm?: "question" | "command" | "exclamation"; // What form to convert to
+  conversionSteps?: string[]; // Step-by-step explanation of the conversion
+  // For situational grammar exercises
+  situation?: {
+    context: string; // e.g., "Job interview", "Telling a story", "Writing an email"
+    scenario: string; // Detailed description of the situation
+    appropriateGrammar: string[]; // Which grammar structures are most appropriate
+    inappropriateGrammar: string[]; // Which structures should be avoided
+    formalityLevel: "formal" | "informal" | "neutral";
+    tips: string[]; // Specific tips for this situation
+  };
+  // For paragraph tense conversion exercises
+  originalParagraph?: string; // The paragraph in original tense
+  sourceTense?: string; // Original tense (e.g., "Present Simple")
+  targetTense?: string; // Target tense to convert to (e.g., "Past Perfect")
+  convertedParagraph?: string; // The correct conversion
+  conversionRules?: string[]; // Rules applied during conversion
+  // For grammar generator exercises
+  generatorData?: {
+    vocabulary: string[]; // Input vocabulary words
+    grammarRule: string; // Selected grammar rule/tense
+    generatedSentences: string[]; // AI-generated sentences using the vocabulary
+    task: "generate" | "evaluate" | "modify"; // What the learner needs to do
+  };
+  // For true-false lightning exercises
+  lightningData?: {
+    sentence: string; // The sentence to evaluate
+    timeLimit: number; // Time limit in seconds (typically 5)
+    correctness: boolean; // Whether the sentence is grammatically correct
+    errorType?: string; // Type of error if sentence is incorrect
+    quickExplanation: string; // Brief explanation for the answer
+  };
+
+  // For speed challenge exercises
+  speedChallengeData?: {
+    timeLimit: number; // Time limit for the question in seconds
+    points: number; // Points awarded for correct answer
+    difficulty: "easy" | "medium" | "hard";
+    bonusTime?: number; // Extra time awarded for quick answers
+  };
+
+  // For word arrangement race exercises
+  wordArrangementData?: {
+    scrambledWords: string[]; // Words in wrong order
+    correctOrder: string[]; // Words in correct order
+    timeLimit: number; // Time limit to arrange words
+    hints?: string[]; // Optional hints for word order
+  };
+
+  // For grammar memory match exercises
+  memoryMatchData?: {
+    pairs: Array<{
+      id: string;
+      type: "rule" | "example" | "term" | "definition";
+      content: string;
+      matchId: string; // ID of the matching pair
+    }>;
+    timeLimit?: number;
+  };
+
+  // For image grammar quiz exercises
+  imageGrammarData?: {
+    imageUrl?: string; // Generated image URL
+    imagePrompt: string; // Prompt used to generate the image
+    imageDescription: string; // Description of what's in the image
+    grammarFocus: string; // What grammar point the image is testing
+    alternatives?: string[]; // Alternative descriptions/answers
+  };
+
+  // For grammar puzzle exercises
+  puzzleData?: {
+    clues: string[]; // Clues to solve the puzzle
+    puzzleType: "crossword" | "word-search" | "anagram" | "riddle";
+    solution: string | string[]; // Solution to the puzzle
+    difficulty: "easy" | "medium" | "hard";
+    timeLimit?: number;
+  };
+
+  // For rapid fire correction exercises
+  rapidFireData?: {
+    incorrectSentence: string; // Sentence with error
+    errorType: string; // Type of grammar error
+    timeLimit: number; // Time to identify and correct
+    quickFix: string; // The corrected version
+    streak?: number; // Current streak count
+  };
+
+  // For tense timeline game
+  timelineData?: {
+    events: Array<{
+      id: string;
+      event: string;
+      correctTense: string;
+      timeMarker: string; // "past", "present", "future", etc.
+      position: number; // Correct position in timeline
+    }>;
+    timeLimit?: number;
+  };
+
+  // For grammar category sort
+  categorySortData?: {
+    items: Array<{
+      id: string;
+      content: string;
+      correctCategory: string;
+    }>;
+    categories: string[]; // Available categories
+    timeLimit?: number;
+  };
 }
 
 export interface Exercise {
@@ -37,7 +185,25 @@ export type TypeExcercise =
   | "punctuation"
   | "word-formation"
   | "sentence-combining"
-  | "dialogue-completion"; // Add all supported exercise types
+  | "dialogue-completion"
+  | "comparison-exercise"
+  | "context-matching" // Context-based grammar matching
+  | "passive-active-matching" // Drag and match active-passive sentences
+  | "clause-combining" // Drag and combine sentence clauses
+  | "multi-topic-integration" // Exercises combining 2-3 grammar topics
+  | "form-conversion" // Convert normal sentences to questions/commands/exclamations
+  | "situational-grammar" // Grammar practice for specific real-world situations
+  | "paragraph-tense-conversion" // Change entire paragraph from one tense to another
+  | "grammar-generator" // Generate sentences from vocabulary and grammar
+  | "true-false-lightning" // True or False lightning game
+  | "speed-challenge" // Answer questions quickly in limited time
+  | "word-arrangement-race" // Arrange words into correct sentence order quickly
+  | "grammar-memory-match" // Memory matching game with grammar rules
+  | "image-grammar-quiz" // Grammar questions based on generated images
+  | "grammar-puzzle-solver" // Solve grammar puzzles with clues
+  | "rapid-fire-corrections" // Quickly identify and correct grammar errors
+  | "tense-timeline-game" // Arrange events/sentences in chronological order
+  | "grammar-category-sort"; // Sort words/phrases into correct grammar categories
 
 export interface GrammarError {
   original: string;
@@ -51,6 +217,16 @@ export interface FixResponse {
 }
 
 export type CEFRLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+
+// Certificate types for targeted exercise generation
+export type CertificateType =
+  | "IELTS"
+  | "TOEIC"
+  | "PTE"
+  | "TOEFL"
+  | "Cambridge"
+  | "SAT"
+  | "VSTEP";
 
 // New interfaces for mistake tracking and analytics
 export interface MistakeRecord {

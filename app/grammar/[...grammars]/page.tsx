@@ -81,45 +81,50 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
               Master English grammar with our comprehensive collection
             </p>
 
-            {/* Status Info */}
-            <div className="mb-12 bg-blue-50 rounded-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Choose a topic to get started
-              </h2>
-              <p className="text-gray-600">
-                Use the navigation panel on the right to explore available
-                grammar topics, organized by category for easy learning.
-              </p>
+            {/* Welcome Section */}
+            <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="h-8 w-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                  Choose a Grammar Topic
+                </h2>
+                <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                  Explore our comprehensive grammar collection organized by categories. 
+                  Use the navigation panel to discover topics tailored for your learning journey.
+                </p>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+            {/* Category Preview Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {grammarCategories.slice(0, 6).map((category) => (
                 <div
                   key={category.id}
-                  className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                  className="group bg-white rounded-xl border border-gray-200 p-6 hover:border-blue-300 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
                 >
-                  <div className="text-3xl mb-3">{category.icon}</div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {category.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {category.description}
-                  </p>
-                  <div className="text-sm text-blue-600 font-medium">
-                    {category.items.length} topics
+                  <div className="flex items-start gap-4">
+                    <div className="text-3xl group-hover:scale-110 transition-transform duration-300">
+                      {category.icon}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-700 transition-colors">
+                        {category.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+                        {category.description}
+                      </p>
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full">
+                        <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+                        <span className="text-sm text-blue-700 font-medium">
+                          {category.items.length} topics
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="mt-12 bg-blue-50 rounded-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Choose a topic to get started
-              </h2>
-              <p className="text-gray-600">
-                Use the navigation panel on the right to explore available
-                grammar topics, organized by category for easy learning.
-              </p>
             </div>
           </div>
         </div>
@@ -178,87 +183,108 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
       return String(value);
     }
     if (Array.isArray(value)) {
-      return value.map(item => safeRender(item)).join(", ");
+      return value.map((item) => safeRender(item)).join(", ");
     }
     if (typeof value === "object") {
       // Special handling for journal/research article objects
       if (value.title && value.authors && value.journal && value.year) {
-        const authors = Array.isArray(value.authors) 
-          ? value.authors.join(", ") 
+        const authors = Array.isArray(value.authors)
+          ? value.authors.join(", ")
           : String(value.authors);
         const doi = value.doi ? ` - DOI: ${value.doi}` : "";
-        const findings = value.keyFindings ? ` - Key Findings: ${value.keyFindings}` : "";
+        const findings = value.keyFindings
+          ? ` - Key Findings: ${value.keyFindings}`
+          : "";
         return `${value.title} by ${authors} (${value.year}) in ${value.journal}${doi}${findings}`;
       }
-      
+
       // Special handling for citation/reference objects
       if (value.title && value.author && (value.year || value.publisher)) {
-        const chapters = value.relevantChapters && Array.isArray(value.relevantChapters) 
-          ? ` - Chapters: ${value.relevantChapters.join(", ")}` 
-          : "";
+        const chapters =
+          value.relevantChapters && Array.isArray(value.relevantChapters)
+            ? ` - Chapters: ${value.relevantChapters.join(", ")}`
+            : "";
         const isbn = value.isbn ? ` (ISBN: ${value.isbn})` : "";
-        return `${value.title} by ${value.author} (${value.year || 'N/A'}) - ${value.publisher || 'Unknown Publisher'}${chapters}${isbn}`;
+        return `${value.title} by ${value.author} (${value.year || "N/A"}) - ${
+          value.publisher || "Unknown Publisher"
+        }${chapters}${isbn}`;
       }
-      
+
       // Special handling for web resource objects
       if (value.name && value.url && value.description) {
-        const accessDate = value.accessDate ? ` (Accessed: ${value.accessDate})` : "";
+        const accessDate = value.accessDate
+          ? ` (Accessed: ${value.accessDate})`
+          : "";
         return `${value.name} - ${value.description} - URL: ${value.url}${accessDate}`;
       }
-      
-      // Special handling for book/resource objects  
+
+      // Special handling for book/resource objects
       if (value.title && value.author && (value.focus || value.level)) {
         const focus = value.focus ? ` - Focus: ${value.focus}` : "";
         const level = value.level ? ` - Level: ${value.level}` : "";
         return `${value.title} by ${value.author}${focus}${level}`;
       }
-      
+
       // Generic object fallback - format key-value pairs nicely
       const objectEntries = Object.entries(value);
       if (objectEntries.length <= 5) {
-        return objectEntries.map(([key, val]) => {
-          const formattedKey = key.replace(/([A-Z])/g, " $1").replace(/_/g, " ").toLowerCase();
-          return `${formattedKey}: ${safeRender(val)}`;
-        }).join(" | ");
+        return objectEntries
+          .map(([key, val]) => {
+            const formattedKey = key
+              .replace(/([A-Z])/g, " $1")
+              .replace(/_/g, " ")
+              .toLowerCase();
+            return `${formattedKey}: ${safeRender(val)}`;
+          })
+          .join(" | ");
       }
-      
+
       // Special handling for language error correction objects
-      if (value.language && value.error && value.correction && value.explanation) {
+      if (
+        value.language &&
+        value.error &&
+        value.correction &&
+        value.explanation
+      ) {
         return `Language: ${value.language} | Error: ${value.error} | Correction: ${value.correction} | Explanation: ${value.explanation}`;
       }
-      
+
       // Special handling for pattern objects with structure like: { pattern: "...", examples: [...], level: "..." }
       if (value.pattern && value.examples && value.level) {
-        const examples = Array.isArray(value.examples) 
-          ? value.examples.join(", ") 
+        const examples = Array.isArray(value.examples)
+          ? value.examples.join(", ")
           : String(value.examples);
         return `${value.pattern} (Level: ${value.level}) - Examples: ${examples}`;
       }
-      
+
       // Special handling for objects with description and examples
       if (value.description && value.examples) {
-        const examples = Array.isArray(value.examples) 
-          ? value.examples.join(", ") 
+        const examples = Array.isArray(value.examples)
+          ? value.examples.join(", ")
           : String(value.examples);
         return `${value.description} - Examples: ${examples}`;
       }
-      
+
       // Special handling for objects with rule and examples
       if (value.rule && value.examples) {
-        const examples = Array.isArray(value.examples) 
-          ? value.examples.join(", ") 
+        const examples = Array.isArray(value.examples)
+          ? value.examples.join(", ")
           : String(value.examples);
         return `${value.rule} - Examples: ${examples}`;
       }
-      
+
       // For simple key-value objects, format them nicely
       const entries = Object.entries(value);
       if (entries.length <= 3) {
-        return entries.map(([key, val]) => `${key}: ${safeRender(val)}`).join(" | ");
+        return entries
+          .map(([key, val]) => `${key}: ${safeRender(val)}`)
+          .join(" | ");
       }
-      
+
       // If object is too complex, format it nicely instead of JSON
-      return `Complex object with ${entries.length} properties: ${entries.map(([key]) => key).join(", ")}`;
+      return `Complex object with ${entries.length} properties: ${entries
+        .map(([key]) => key)
+        .join(", ")}`;
     }
     return String(value);
   };
@@ -266,50 +292,61 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
   // Special function to render comprehensive verb categories with organized layout
   const renderVerbCategories = (content: string) => {
     // Check if this is verb categories content or content with many words
-    const isVerbContent = content.toLowerCase().includes('verb') || 
-                         content.toLowerCase().includes('comprehensive') ||
-                         content.toLowerCase().includes('categories') ||
-                         content.toLowerCase().includes('actions') ||
-                         content.toLowerCase().includes('movements') ||
-                         content.toLowerCase().includes('oneself'); // Key indicator for reflexive verbs
-    
+    const isVerbContent =
+      content.toLowerCase().includes("verb") ||
+      content.toLowerCase().includes("comprehensive") ||
+      content.toLowerCase().includes("categories") ||
+      content.toLowerCase().includes("actions") ||
+      content.toLowerCase().includes("movements") ||
+      content.toLowerCase().includes("oneself"); // Key indicator for reflexive verbs
+
     // Check if content has many words (more than 15 words total)
     const wordCount = content.split(/\s+/).length;
     const hasManyWords = wordCount > 15;
-    
+
     // Check if it has the pattern of main category + subcategories
-    const hasSubcategories = content.includes(':') && content.split('\n').some(line => line.includes(':'));
-    
+    const hasSubcategories =
+      content.includes(":") &&
+      content.split("\n").some((line) => line.includes(":"));
+
     // More liberal detection - if it has multiple categories or many words with colons
     const categoryCount = (content.match(/:/g) || []).length;
     const hasMultipleCategories = categoryCount >= 2;
-    
-    if (!isVerbContent && !hasManyWords && !hasSubcategories && !hasMultipleCategories) {
+
+    if (
+      !isVerbContent &&
+      !hasManyWords &&
+      !hasSubcategories &&
+      !hasMultipleCategories
+    ) {
       return null;
     }
 
     // Enhanced parsing for main categories and subcategories
-    const lines = content.split('\n').map(line => line.trim()).filter(line => line);
+    const lines = content
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line);
     const parsedContent = [];
-    let currentMainCategory = 'Main Category';
+    let currentMainCategory = "Main Category";
     let currentSubcategory = null;
     let currentItems = [];
-    
+
     for (const line of lines) {
-      if (line.includes(':')) {
+      if (line.includes(":")) {
         // Save previous subcategory if exists
         if (currentSubcategory && currentItems.length > 0) {
           parsedContent.push({
             mainCategory: currentMainCategory,
             subcategory: currentSubcategory,
-            items: [...currentItems]
+            items: [...currentItems],
           });
           currentItems = [];
         }
-        
+
         // This line defines a new category/subcategory
-        const categoryName = line.replace(':', '').trim();
-        
+        const categoryName = line.replace(":", "").trim();
+
         // If this looks like a main category (typically the first one or standalone)
         if (parsedContent.length === 0 && !currentSubcategory) {
           currentMainCategory = categoryName;
@@ -317,155 +354,197 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         } else {
           currentSubcategory = categoryName;
         }
-      } else if (line && !line.includes(':')) {
+      } else if (line && !line.includes(":")) {
         currentItems.push(line);
       }
     }
-    
+
     // Add the last subcategory
     if (currentSubcategory && currentItems.length > 0) {
       parsedContent.push({
         mainCategory: currentMainCategory,
         subcategory: currentSubcategory,
-        items: [...currentItems]
+        items: [...currentItems],
       });
     } else if (!currentSubcategory && currentItems.length > 0) {
       // If no subcategories were found, treat the main category as a subcategory
       parsedContent.push({
         mainCategory: currentMainCategory,
         subcategory: currentMainCategory,
-        items: [...currentItems]
+        items: [...currentItems],
       });
     }
-    
+
     // If no proper structure found, fall back to simple category pattern
     if (parsedContent.length === 0) {
       const categoryPattern = /^([^:]+):\s*\n?((?:\s*[^\n:]+\n?)*)/gm;
       const matches = [...content.matchAll(categoryPattern)];
-      
+
       if (matches.length === 0 && (hasManyWords || hasMultipleCategories)) {
         // Treat as a simple word list
-        const words = content.split(/[,\n]/).map(w => w.trim()).filter(w => w && w.length > 1);
+        const words = content
+          .split(/[,\n]/)
+          .map((w) => w.trim())
+          .filter((w) => w && w.length > 1);
         if (words.length > 5) {
           parsedContent.push({
-            mainCategory: 'Word Collection',
-            subcategory: 'Terms',
-            items: words
+            mainCategory: "Word Collection",
+            subcategory: "Terms",
+            items: words,
           });
         }
       } else {
-        matches.forEach(match => {
-          const items = match[2].trim().split(/\n/).map(item => item.trim()).filter(item => item);
+        matches.forEach((match) => {
+          const items = match[2]
+            .trim()
+            .split(/\n/)
+            .map((item) => item.trim())
+            .filter((item) => item);
           if (items.length > 0) {
             parsedContent.push({
               mainCategory: currentMainCategory,
               subcategory: match[1].trim(),
-              items: items
+              items: items,
             });
           }
         });
       }
     }
-    
+
     if (parsedContent.length === 0) {
       return null;
     }
-    
+
     // Group by main category
     const groupedContent = parsedContent.reduce((acc, item) => {
-      const mainCat = item.mainCategory || 'General';
+      const mainCat = item.mainCategory || "General";
       if (!acc[mainCat]) {
         acc[mainCat] = [];
       }
       acc[mainCat].push(item);
       return acc;
     }, {} as Record<string, typeof parsedContent>);
-    
+
     return (
       <div className="space-y-8">
         <div className="space-y-10">
-          {Object.entries(groupedContent).map(([mainCategory, subcategories], mainIndex) => (
-            <div key={mainIndex} className="space-y-6">
-              {/* Main Category Header */}
-              {Object.keys(groupedContent).length > 1 && (
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2 capitalize">
-                    {mainCategory}
-                  </h3>
-                  <div className="w-24 h-1 bg-gradient-to-r from-violet-400 to-purple-400 rounded-full mx-auto"></div>
-                </div>
-              )}
-              
-              {/* Subcategories Grid */}
-              <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-                {subcategories.map((subcat, subcatIndex) => {
-                  // Clean up items
-                  const cleanItems = subcat.items.map(item => 
-                    item.replace(/^[•\-*]\s*/, '')
-                        .replace(/^\d+\.\s*/, '')
-                        .trim()
-                  ).filter(item => item.length > 0);
-                  
-                  // Split items into chunks for better display
-                  const chunkedItems = [];
-                  const itemsPerRow = 3; // 3 items per row for better readability
-                  for (let i = 0; i < cleanItems.length; i += itemsPerRow) {
-                    chunkedItems.push(cleanItems.slice(i, i + itemsPerRow));
-                  }
-                  
-                  return (
-                    <div key={subcatIndex} className="bg-white rounded-lg p-5 border border-gray-200 hover:border-purple-300 transition-colors duration-200">
-                      <div className="flex items-start gap-3 mb-4">
-                        <div className="bg-purple-100 p-2 rounded-lg flex-shrink-0">
-                          <span className="text-purple-600 text-lg">{isVerbContent ? '🎯' : '📝'}</span>
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="text-lg font-semibold text-gray-800 capitalize mb-1">
-                            {subcat.subcategory}
-                          </h4>
-                          <span className="text-sm text-gray-500">
-                            {cleanItems.length} {isVerbContent ? 'verbs' : 'words'}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        {chunkedItems.map((chunk, chunkIndex) => (
-                          <div key={chunkIndex} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                            {chunk.map((item, itemIndex) => (
-                              <div key={itemIndex} className="flex items-center gap-2 p-3 bg-gray-50 rounded-md hover:bg-purple-50 transition-colors duration-150">
-                                <span className="w-2 h-2 bg-purple-400 rounded-full flex-shrink-0"></span>
-                                <span className="text-gray-700 text-sm">
-                                  {item}
-                                </span>
-                                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                  <span className="text-violet-400 text-xs">✨</span>
-                                </div>
-                              </div>
-                            ))}
+          {Object.entries(groupedContent).map(
+            ([mainCategory, subcategories], mainIndex) => (
+              <div key={mainIndex} className="space-y-6">
+                {/* Main Category Header */}
+                {Object.keys(groupedContent).length > 1 && (
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2 capitalize">
+                      {mainCategory}
+                    </h3>
+                    <div className="w-24 h-1 bg-gradient-to-r from-violet-400 to-purple-400 rounded-full mx-auto"></div>
+                  </div>
+                )}
+
+                {/* Subcategories Grid */}
+                <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+                  {subcategories.map((subcat, subcatIndex) => {
+                    // Clean up items
+                    const cleanItems = subcat.items
+                      .map((item) =>
+                        item
+                          .replace(/^[•\-*]\s*/, "")
+                          .replace(/^\d+\.\s*/, "")
+                          .trim()
+                      )
+                      .filter((item) => item.length > 0);
+
+                    // Split items into chunks for better display
+                    const chunkedItems = [];
+                    const itemsPerRow = 3; // 3 items per row for better readability
+                    for (let i = 0; i < cleanItems.length; i += itemsPerRow) {
+                      chunkedItems.push(cleanItems.slice(i, i + itemsPerRow));
+                    }
+
+                    return (
+                      <div
+                        key={subcatIndex}
+                        className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                      >
+                        <div className="flex items-start gap-4 mb-6">
+                          <div className="bg-gradient-to-br from-violet-500 to-purple-600 p-3 rounded-full flex-shrink-0 shadow-md">
+                            <span className="text-white text-xl">
+                              {isVerbContent ? "🎯" : "📝"}
+                            </span>
                           </div>
-                        ))}
-                      </div>
-                      
-                      {/* Subcategory summary */}
-                      <div className="mt-6 pt-4 border-t border-violet-200/50">
-                        <div className="flex items-center justify-between text-sm text-gray-600">
-                          <span className="flex items-center gap-2">
-                            <span className="w-2 h-2 bg-violet-400 rounded-full"></span>
-                            <span>Total: <strong>{cleanItems.length}</strong> {isVerbContent ? 'verbs' : 'items'}</span>
-                          </span>
-                          <span className="flex items-center gap-2">
-                            <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
-                            <span>Group: <strong>{subcat.subcategory}</strong></span>
-                          </span>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-xs uppercase tracking-wide text-violet-600 font-semibold bg-violet-100 px-3 py-1 rounded-full">
+                                {isVerbContent ? "Verb Group" : "Word Group"}
+                              </span>
+                              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                                {cleanItems.length}{" "}
+                                {isVerbContent ? "verbs" : "words"}
+                              </span>
+                            </div>
+                            <h4 className="text-xl font-bold text-violet-800 leading-tight capitalize">
+                              {subcat.subcategory}
+                            </h4>
+                            <div className="w-full h-0.5 bg-gradient-to-r from-violet-300 to-purple-300 rounded-full mt-2"></div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          {chunkedItems.map((chunk, chunkIndex) => (
+                            <div
+                              key={chunkIndex}
+                              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
+                            >
+                              {chunk.map((item, itemIndex) => (
+                                <div
+                                  key={itemIndex}
+                                  className="group flex items-center gap-3 p-4 bg-white/80 backdrop-blur-sm rounded-lg border border-violet-100/50 hover:bg-white hover:border-violet-300 hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <div className="relative">
+                                      <span className="w-3 h-3 bg-gradient-to-r from-violet-400 to-purple-500 rounded-full flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-200"></span>
+                                      <span className="absolute inset-0 w-3 h-3 bg-gradient-to-r from-violet-400 to-purple-500 rounded-full animate-ping opacity-20 group-hover:opacity-40"></span>
+                                    </div>
+                                  </div>
+                                  <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors duration-200 text-sm flex-1">
+                                    {item}
+                                  </span>
+                                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <span className="text-violet-400 text-xs">
+                                      ✨
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Subcategory summary */}
+                        <div className="mt-6 pt-4 border-t border-violet-200/50">
+                          <div className="flex items-center justify-between text-sm text-gray-600">
+                            <span className="flex items-center gap-2">
+                              <span className="w-2 h-2 bg-violet-400 rounded-full"></span>
+                              <span>
+                                Total: <strong>{cleanItems.length}</strong>{" "}
+                                {isVerbContent ? "verbs" : "items"}
+                              </span>
+                            </span>
+                            <span className="flex items-center gap-2">
+                              <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
+                              <span>
+                                Group: <strong>{subcat.subcategory}</strong>
+                              </span>
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
       </div>
     );
@@ -474,48 +553,93 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
   // Special function to handle long word lists or vocabulary-heavy content
   const renderWordList = (content: string) => {
     // Check if content is a long list of words (more than 15 words, no clear categories)
-    const words = content.split(/[,\n\s]+/).map(w => w.trim()).filter(w => w && w.length > 1);
-    const hasCategories = content.includes(':') && content.split(':').length > 2;
-    
+    const words = content
+      .split(/[,\n\s]+/)
+      .map((w) => w.trim())
+      .filter((w) => w && w.length > 1);
+    const hasCategories =
+      content.includes(":") && content.split(":").length > 2;
+
     if (words.length < 15 || hasCategories) {
       return null;
     }
-    
+
     // Clean up words
-    const cleanWords = words.map(word => 
-      word.replace(/^[•\-*]\s*/, '')
-          .replace(/^\d+\.\s*/, '')
-          .replace(/[.,;!?]$/, '')
+    const cleanWords = words
+      .map((word) =>
+        word
+          .replace(/^[•\-*]\s*/, "")
+          .replace(/^\d+\.\s*/, "")
+          .replace(/[.,;!?]$/, "")
           .trim()
-    ).filter(word => word.length > 0 && word.length < 30); // Filter out very long strings
-    
+      )
+      .filter((word) => word.length > 0 && word.length < 30); // Filter out very long strings
+
     if (cleanWords.length < 10) {
       return null;
     }
-    
+
     // Split into chunks
     const chunkedWords = [];
     for (let i = 0; i < cleanWords.length; i += 8) {
       chunkedWords.push(cleanWords.slice(i, i + 8));
     }
-    
+
     return (
-      <div className="bg-white rounded-lg p-5 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-          📚 <span>Vocabulary Collection</span>
-          <span className="text-sm font-normal text-gray-500">({cleanWords.length} words)</span>
-        </h3>
-        
-        <div className="space-y-3">
-          {chunkedWords.map((chunk, chunkIndex) => (
-            <div key={chunkIndex} className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-              {chunk.map((word, wordIndex) => (
-                <div key={wordIndex} className="px-3 py-2 bg-gray-50 rounded-md text-sm text-gray-700 text-center hover:bg-blue-50 transition-colors duration-150">
-                  {word}
-                </div>
-              ))}
+      <div className="space-y-6">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            📚 Vocabulary Collection
+          </h2>
+          <p className="text-gray-600 mt-2">
+            Organized for easy reading and learning
+          </p>
+          <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 bg-emerald-100 rounded-full">
+            <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+            <span className="text-sm font-medium text-emerald-700">
+              {cleanWords.length} words
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg">
+          <div className="space-y-4">
+            {chunkedWords.map((chunk, chunkIndex) => (
+              <div
+                key={chunkIndex}
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3"
+              >
+                {chunk.map((word, wordIndex) => (
+                  <div
+                    key={wordIndex}
+                    className="group flex items-center justify-center p-3 bg-white/70 backdrop-blur-sm rounded-lg border border-emerald-100/50 hover:bg-white hover:border-emerald-300 hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+                  >
+                    <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors duration-200 text-sm text-center">
+                      {word}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-emerald-200/50 text-center">
+            <div className="inline-flex items-center gap-4 text-sm text-gray-600">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
+                <span>
+                  Total: <strong>{cleanWords.length}</strong> words
+                </span>
+              </span>
+              <span className="w-px h-4 bg-gray-300"></span>
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-teal-400 rounded-full"></span>
+                <span>
+                  Organized in <strong>{chunkedWords.length}</strong> rows
+                </span>
+              </span>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     );
@@ -526,27 +650,61 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
     // Check if content contains categories with lists (like "introduction:", "assertion:")
     const categoryPattern = /^([^:]+):\s*\n((?:\s*[^\n]+\n?)+)/gm;
     const matches = [...content.matchAll(categoryPattern)];
-    
+
     if (matches.length > 0) {
       return (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {matches.map((match, categoryIndex) => {
             const categoryTitle = match[1].trim();
-            const items = match[2].trim().split('\n').map(item => item.trim()).filter(item => item);
-            
+            const items = match[2]
+              .trim()
+              .split("\n")
+              .map((item) => item.trim())
+              .filter((item) => item);
+
             return (
-              <div key={categoryIndex} className="bg-white rounded-lg p-5 border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800 mb-3 capitalize flex items-center gap-2">
-                  📝 <span>{categoryTitle}</span>
-                </h3>
-                
-                <div className="space-y-2">
-                  {items.map((item, itemIndex) => (
-                    <div key={itemIndex} className="flex items-start gap-2 p-2 hover:bg-gray-50 rounded transition-colors duration-150">
-                      <span className="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0 mt-2"></span>
-                      <span className="text-gray-700 text-sm leading-relaxed">{item}</span>
+              <div
+                key={categoryIndex}
+                className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-3 rounded-full flex-shrink-0 shadow-md">
+                    <span className="text-white text-xl">📝</span>
+                  </div>
+                  <div className="flex-1 space-y-4">
+                    <div>
+                      <span className="text-xs uppercase tracking-wide text-blue-600 font-semibold bg-blue-100 px-2 py-1 rounded-full">
+                        Category
+                      </span>
+                      <h3 className="text-xl font-bold text-blue-800 mt-2 leading-tight capitalize">
+                        {categoryTitle}
+                      </h3>
+                      <div className="w-full h-0.5 bg-gradient-to-r from-blue-300 to-indigo-300 rounded-full mt-2"></div>
                     </div>
-                  ))}
+
+                    <div className="grid gap-3">
+                      {items.map((item, itemIndex) => (
+                        <div
+                          key={itemIndex}
+                          className="group flex items-center gap-4 p-4 bg-white/80 backdrop-blur-sm rounded-lg border border-blue-100/50 hover:bg-white hover:border-blue-300 hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              <span className="w-3 h-3 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-200"></span>
+                              <span className="absolute inset-0 w-3 h-3 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full animate-ping opacity-20 group-hover:opacity-40"></span>
+                            </div>
+                            <div className="w-px h-6 bg-gradient-to-b from-blue-300 to-transparent"></div>
+                          </div>
+                          <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors duration-200 flex-1">
+                            {item}
+                          </span>
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span className="text-blue-400 text-sm">✨</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             );
@@ -554,89 +712,169 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         </div>
       );
     }
-    
+
     // Check if content is a simple list (lines starting with common list indicators)
-    const lines = content.split('\n').map(line => line.trim()).filter(line => line);
-    const isSimpleList = lines.length > 1 && lines.every(line => 
-      line.startsWith('•') || 
-      line.startsWith('-') || 
-      line.startsWith('*') || 
-      /^\d+\./.test(line) ||
-      (!line.includes(':') && line.length < 100) // Short phrases without colons
-    );
-    
+    const lines = content
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line);
+    const isSimpleList =
+      lines.length > 1 &&
+      lines.every(
+        (line) =>
+          line.startsWith("•") ||
+          line.startsWith("-") ||
+          line.startsWith("*") ||
+          /^\d+\./.test(line) ||
+          (!line.includes(":") && line.length < 100) // Short phrases without colons
+      );
+
     if (isSimpleList) {
       return (
-        <div className="bg-white rounded-lg p-5 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-            📋 <span>Terms & Expressions</span>
-          </h3>
-          
-          <div className="space-y-2">
-            {lines.map((item, itemIndex) => {
-              // Clean up list indicators
-              const cleanItem = item.replace(/^[•\-*]\s*/, '').replace(/^\d+\.\s*/, '');
-              return (
-                <div key={itemIndex} className="flex items-start gap-2 p-2 hover:bg-gray-50 rounded transition-colors duration-150">
-                  <span className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0 mt-2"></span>
-                  <span className="text-gray-700 text-sm leading-relaxed">{cleanItem}</span>
-                </div>
-              );
-            })}
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+          <div className="flex items-start gap-4">
+            <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-3 rounded-full flex-shrink-0 shadow-md">
+              <span className="text-white text-xl">📋</span>
+            </div>
+            <div className="flex-1 space-y-4">
+              <div>
+                <span className="text-xs uppercase tracking-wide text-green-600 font-semibold bg-green-100 px-2 py-1 rounded-full">
+                  List Items
+                </span>
+                <h3 className="text-lg font-bold text-green-800 mt-2">
+                  Terms & Expressions
+                </h3>
+                <div className="w-full h-0.5 bg-gradient-to-r from-green-300 to-emerald-300 rounded-full mt-2"></div>
+              </div>
+
+              <div className="grid gap-3">
+                {lines.map((item, itemIndex) => {
+                  // Clean up list indicators
+                  const cleanItem = item
+                    .replace(/^[•\-*]\s*/, "")
+                    .replace(/^\d+\.\s*/, "");
+                  return (
+                    <div
+                      key={itemIndex}
+                      className="group flex items-center gap-4 p-4 bg-white/80 backdrop-blur-sm rounded-lg border border-green-100/50 hover:bg-white hover:border-green-300 hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <span className="w-3 h-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-200"></span>
+                          <span className="absolute inset-0 w-3 h-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-ping opacity-20 group-hover:opacity-40"></span>
+                        </div>
+                        <div className="w-px h-6 bg-gradient-to-b from-green-300 to-transparent"></div>
+                      </div>
+                      <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors duration-200 flex-1">
+                        {cleanItem}
+                      </span>
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span className="text-green-400 text-sm">✨</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       );
     }
-    
+
     return null; // Return null if not a categorical list
   };
 
   // Special render function for pattern objects to display them as structured content
   const renderPatternObject = (obj: any) => {
     if (typeof obj !== "object" || !obj) return safeRender(obj);
-    
+
     // Handle journal/research article objects
     if (obj.title && obj.authors && obj.journal && obj.year) {
       return (
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-start gap-3">
-            <div className="bg-green-100 p-2 rounded-lg flex-shrink-0">
-              <span className="text-green-600 text-lg">📄</span>
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div className="flex items-start gap-4">
+            <div className="bg-green-100 p-3 rounded-full flex-shrink-0">
+              <span className="text-green-600 text-xl">📄</span>
             </div>
-            <div className="flex-1">
-              <h4 className="font-semibold text-gray-800 mb-2">{obj.title}</h4>
-              <div className="text-sm text-gray-600 space-y-1">
-                <p><strong>Authors:</strong> {Array.isArray(obj.authors) ? obj.authors.join(", ") : obj.authors}</p>
-                <p><strong>Journal:</strong> {obj.journal} ({obj.year})</p>
-                {obj.doi && <p><strong>DOI:</strong> <code className="text-xs bg-gray-100 px-1 rounded">{obj.doi}</code></p>}
-                {obj.keyFindings && <p><strong>Key Findings:</strong> {obj.keyFindings}</p>}
+            <div className="flex-1 space-y-3">
+              <div>
+                <span className="text-xs uppercase tracking-wide text-green-600 font-semibold">
+                  Research Article
+                </span>
+                <h4 className="text-lg font-bold text-green-800 mt-1 leading-tight">
+                  {obj.title}
+                </h4>
               </div>
-            </div>
-          </div>
-        </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                  <span className="text-gray-600 font-medium">Authors:</span>
+                  <span className="text-gray-800">
+                    {Array.isArray(obj.authors)
+                      ? obj.authors.join(", ")
+                      : obj.authors}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                  <span className="text-gray-600 font-medium">Year:</span>
+                  <span className="text-gray-800 font-semibold">
+                    {obj.year}
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-white/60 rounded-lg p-3 border border-green-100">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-green-600">📚</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    Published in:
+                  </span>
+                </div>
+                <p className="text-gray-800 italic font-medium">
+                  {obj.journal}
+                </p>
+              </div>
+
+              {obj.doi && (
                 <div className="bg-white/60 rounded-lg p-3 border border-green-100">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-green-600">🔗</span>
-                    <span className="text-sm font-medium text-gray-700">DOI:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      DOI:
+                    </span>
                   </div>
-                  <code className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded break-all">{obj.doi}</code>
+                  <code className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded break-all">
+                    {obj.doi}
+                  </code>
                 </div>
               )}
-              
+
               {obj.keyFindings && (
                 <div className="bg-white/60 rounded-lg p-3 border border-green-100">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-green-600">🔍</span>
-                    <span className="text-sm font-medium text-gray-700">Key Findings:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Key Findings:
+                    </span>
                   </div>
-                  <p className="text-gray-800 leading-relaxed">{obj.keyFindings}</p>
+                  <p className="text-gray-800 leading-relaxed">
+                    {obj.keyFindings}
+                  </p>
                 </div>
               )}
-              
+
               {obj.pages && (
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <span className="text-green-600">📖</span>
-                  <span>Pages: <span className="font-medium text-gray-800">{obj.pages}</span></span>
+                  <span>
+                    Pages:{" "}
+                    <span className="font-medium text-gray-800">
+                      {obj.pages}
+                    </span>
+                  </span>
                 </div>
               )}
             </div>
@@ -644,7 +882,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         </div>
       );
     }
-    
+
     // Handle citation/reference objects
     if (obj.title && obj.author && (obj.year || obj.publisher)) {
       return (
@@ -655,54 +893,76 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
             </div>
             <div className="flex-1 space-y-3">
               <div>
-                <span className="text-xs uppercase tracking-wide text-blue-600 font-semibold">Citation</span>
-                <h4 className="text-lg font-bold text-blue-800 mt-1 leading-tight">{obj.title}</h4>
+                <span className="text-xs uppercase tracking-wide text-blue-600 font-semibold">
+                  Citation
+                </span>
+                <h4 className="text-lg font-bold text-blue-800 mt-1 leading-tight">
+                  {obj.title}
+                </h4>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
                   <span className="text-gray-600 font-medium">Author:</span>
-                  <span className="text-gray-800 font-semibold">{obj.author}</span>
+                  <span className="text-gray-800 font-semibold">
+                    {obj.author}
+                  </span>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
                   <span className="text-gray-600 font-medium">Year:</span>
-                  <span className="text-gray-800 font-semibold">{obj.year || 'N/A'}</span>
+                  <span className="text-gray-800 font-semibold">
+                    {obj.year || "N/A"}
+                  </span>
                 </div>
               </div>
-              
+
               {obj.publisher && (
                 <div className="bg-white/60 rounded-lg p-3 border border-blue-100">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-blue-600">🏢</span>
-                    <span className="text-sm font-medium text-gray-700">Publisher:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Publisher:
+                    </span>
                   </div>
                   <p className="text-gray-800 font-medium">{obj.publisher}</p>
                 </div>
               )}
-              
+
               {obj.relevantChapters && Array.isArray(obj.relevantChapters) && (
                 <div className="bg-white/60 rounded-lg p-3 border border-blue-100">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-blue-600">📖</span>
-                    <span className="text-sm font-medium text-gray-700">Relevant Chapters:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Relevant Chapters:
+                    </span>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {obj.relevantChapters.map((chapter: string, idx: number) => (
-                      <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                        {chapter}
-                      </span>
-                    ))}
+                    {obj.relevantChapters.map(
+                      (chapter: string, idx: number) => (
+                        <span
+                          key={idx}
+                          className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium"
+                        >
+                          {chapter}
+                        </span>
+                      )
+                    )}
                   </div>
                 </div>
               )}
-              
+
               {obj.isbn && (
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <span className="text-blue-600">🔢</span>
-                  <span>ISBN: <code className="text-xs bg-gray-100 px-2 py-1 rounded">{obj.isbn}</code></span>
+                  <span>
+                    ISBN:{" "}
+                    <code className="text-xs bg-gray-100 px-2 py-1 rounded">
+                      {obj.isbn}
+                    </code>
+                  </span>
                 </div>
               )}
             </div>
@@ -710,7 +970,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         </div>
       );
     }
-    
+
     // Handle web resource objects (name, url, description, accessDate)
     if (obj.name && obj.url && obj.description) {
       return (
@@ -721,33 +981,42 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
             </div>
             <div className="flex-1 space-y-4">
               <div>
-                <span className="text-xs uppercase tracking-wide text-purple-600 font-semibold">Web Resource</span>
-                <h4 className="text-lg font-bold text-purple-800 mt-1 leading-tight">{obj.name}</h4>
+                <span className="text-xs uppercase tracking-wide text-purple-600 font-semibold">
+                  Web Resource
+                </span>
+                <h4 className="text-lg font-bold text-purple-800 mt-1 leading-tight">
+                  {obj.name}
+                </h4>
               </div>
-              
+
               <div className="bg-white/60 rounded-lg p-4 border border-purple-100">
-                <p className="text-gray-700 leading-relaxed">{obj.description}</p>
+                <p className="text-gray-700 leading-relaxed">
+                  {obj.description}
+                </p>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-3">
-                <a 
-                  href={obj.url} 
-                  target="_blank" 
+                <a
+                  href={obj.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium text-sm"
                 >
                   <span>🔗</span>
                   <span>Visit Resource</span>
                 </a>
-                
+
                 {obj.accessDate && (
                   <div className="flex items-center gap-2 text-sm text-gray-600 px-3 py-2 bg-white/60 rounded-lg border border-purple-100">
                     <span className="text-purple-600">�</span>
-                    <span>Accessed: <span className="font-medium">{obj.accessDate}</span></span>
+                    <span>
+                      Accessed:{" "}
+                      <span className="font-medium">{obj.accessDate}</span>
+                    </span>
                   </div>
                 )}
               </div>
-              
+
               {obj.type && (
                 <div className="flex items-center gap-2">
                   <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
@@ -760,7 +1029,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         </div>
       );
     }
-    
+
     // Handle book/resource objects (title, author, focus, level)
     if (obj.title && obj.author && (obj.focus || obj.level)) {
       return (
@@ -771,43 +1040,57 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
             </div>
             <div className="flex-1 space-y-3">
               <div>
-                <span className="text-xs uppercase tracking-wide text-indigo-600 font-semibold">Book Resource</span>
-                <h4 className="text-lg font-bold text-indigo-800 mt-1 leading-tight">{obj.title}</h4>
+                <span className="text-xs uppercase tracking-wide text-indigo-600 font-semibold">
+                  Book Resource
+                </span>
+                <h4 className="text-lg font-bold text-indigo-800 mt-1 leading-tight">
+                  {obj.title}
+                </h4>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-indigo-400 rounded-full"></span>
                   <span className="text-gray-600 font-medium">Author:</span>
-                  <span className="text-gray-800 font-semibold">{obj.author}</span>
+                  <span className="text-gray-800 font-semibold">
+                    {obj.author}
+                  </span>
                 </div>
-                
+
                 {obj.level && (
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-indigo-400 rounded-full"></span>
                     <span className="text-gray-600 font-medium">Level:</span>
-                    <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs font-medium">{obj.level}</span>
+                    <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs font-medium">
+                      {obj.level}
+                    </span>
                   </div>
                 )}
               </div>
-              
+
               {obj.focus && (
                 <div className="bg-white/60 rounded-lg p-3 border border-indigo-100">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-indigo-600">🎯</span>
-                    <span className="text-sm font-medium text-gray-700">Focus Area:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Focus Area:
+                    </span>
                   </div>
                   <p className="text-gray-800 font-medium">{obj.focus}</p>
                 </div>
               )}
-              
+
               {obj.description && (
                 <div className="bg-white/60 rounded-lg p-3 border border-indigo-100">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-indigo-600">📝</span>
-                    <span className="text-sm font-medium text-gray-700">Description:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Description:
+                    </span>
                   </div>
-                  <p className="text-gray-700 leading-relaxed">{obj.description}</p>
+                  <p className="text-gray-700 leading-relaxed">
+                    {obj.description}
+                  </p>
                 </div>
               )}
             </div>
@@ -815,7 +1098,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         </div>
       );
     }
-    
+
     // Generic object handler - for ANY object that doesn't match specific patterns
     if (typeof obj === "object" && obj !== null && !Array.isArray(obj)) {
       const entries = Object.entries(obj);
@@ -828,36 +1111,50 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
               </div>
               <div className="flex-1 space-y-3">
                 <div>
-                  <span className="text-xs uppercase tracking-wide text-gray-600 font-semibold">Data Object</span>
-                  <h4 className="text-lg font-bold text-gray-800 mt-1">Information</h4>
+                  <span className="text-xs uppercase tracking-wide text-gray-600 font-semibold">
+                    Data Object
+                  </span>
+                  <h4 className="text-lg font-bold text-gray-800 mt-1">
+                    Information
+                  </h4>
                 </div>
-                
+
                 <div className="grid gap-3">
                   {entries.map(([key, value]) => (
-                    <div key={key} className="bg-white/60 rounded-lg p-3 border border-gray-100">
+                    <div
+                      key={key}
+                      className="bg-white/60 rounded-lg p-3 border border-gray-100"
+                    >
                       <div className="flex items-start gap-3">
                         <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium text-gray-700 mb-1 capitalize">
-                            {key.replace(/([A-Z])/g, " $1").replace(/_/g, " ").toLowerCase()}
+                            {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/_/g, " ")
+                              .toLowerCase()}
                           </div>
                           <div className="text-gray-800">
-                            {Array.isArray(value) 
-                              ? (
-                                <div className="flex flex-wrap gap-1">
-                                  {value.map((v, idx) => (
-                                    <span key={idx} className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
-                                      {typeof v === "object" ? renderUniversalData(v) : String(v)}
-                                    </span>
-                                  ))}
-                                </div>
-                              )
-                              : typeof value === "object" 
-                                ? renderUniversalData(value)
-                                : (
-                                  <span className="font-medium">{String(value)}</span>
-                                )
-                            }
+                            {Array.isArray(value) ? (
+                              <div className="flex flex-wrap gap-1">
+                                {value.map((v, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs"
+                                  >
+                                    {typeof v === "object"
+                                      ? renderUniversalData(v)
+                                      : String(v)}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : typeof value === "object" ? (
+                              renderUniversalData(value)
+                            ) : (
+                              <span className="font-medium">
+                                {String(value)}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -870,7 +1167,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         );
       }
     }
-    
+
     // Handle language error correction objects
     if (obj.language && obj.error && obj.correction && obj.explanation) {
       return (
@@ -881,35 +1178,51 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
             </div>
             <div className="flex-1 space-y-3">
               <div>
-                <span className="text-xs uppercase tracking-wide text-red-600 font-semibold">Language Error</span>
+                <span className="text-xs uppercase tracking-wide text-red-600 font-semibold">
+                  Language Error
+                </span>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">{obj.language}</span>
+                  <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+                    {obj.language}
+                  </span>
                 </div>
               </div>
-              
+
               <div className="grid gap-3">
                 <div className="bg-red-100/50 rounded-lg p-3 border border-red-200">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-red-600">❌</span>
-                    <span className="text-sm font-medium text-red-700">Incorrect:</span>
+                    <span className="text-sm font-medium text-red-700">
+                      Incorrect:
+                    </span>
                   </div>
-                  <p className="text-red-800 line-through font-medium">{obj.error}</p>
+                  <p className="text-red-800 line-through font-medium">
+                    {obj.error}
+                  </p>
                 </div>
-                
+
                 <div className="bg-green-100/50 rounded-lg p-3 border border-green-200">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-green-600">✅</span>
-                    <span className="text-sm font-medium text-green-700">Correct:</span>
+                    <span className="text-sm font-medium text-green-700">
+                      Correct:
+                    </span>
                   </div>
-                  <p className="text-green-800 font-semibold">{obj.correction}</p>
+                  <p className="text-green-800 font-semibold">
+                    {obj.correction}
+                  </p>
                 </div>
-                
+
                 <div className="bg-white/60 rounded-lg p-3 border border-gray-200">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-blue-600">💡</span>
-                    <span className="text-sm font-medium text-gray-700">Explanation:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Explanation:
+                    </span>
                   </div>
-                  <p className="text-gray-700 leading-relaxed">{obj.explanation}</p>
+                  <p className="text-gray-700 leading-relaxed">
+                    {obj.explanation}
+                  </p>
                 </div>
               </div>
             </div>
@@ -917,7 +1230,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         </div>
       );
     }
-    
+
     if (obj.pattern && obj.examples && obj.level) {
       return (
         <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl p-6 border border-yellow-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -927,30 +1240,46 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
             </div>
             <div className="flex-1 space-y-3">
               <div>
-                <span className="text-xs uppercase tracking-wide text-yellow-600 font-semibold">Grammar Pattern</span>
-                <h4 className="text-lg font-bold text-yellow-800 mt-1 leading-tight">{obj.pattern}</h4>
+                <span className="text-xs uppercase tracking-wide text-yellow-600 font-semibold">
+                  Grammar Pattern
+                </span>
+                <h4 className="text-lg font-bold text-yellow-800 mt-1 leading-tight">
+                  {obj.pattern}
+                </h4>
               </div>
-              
+
               <div className="flex items-center gap-2">
-                <span className="text-gray-600 font-medium text-sm">Level:</span>
-                <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">{obj.level}</span>
+                <span className="text-gray-600 font-medium text-sm">
+                  Level:
+                </span>
+                <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                  {obj.level}
+                </span>
               </div>
-              
+
               <div className="bg-white/60 rounded-lg p-4 border border-yellow-100">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-yellow-600">📝</span>
-                  <span className="text-sm font-medium text-gray-700">Examples:</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    Examples:
+                  </span>
                 </div>
                 <div className="space-y-2">
-                  {Array.isArray(obj.examples) ? obj.examples.map((example: string, idx: number) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700 leading-relaxed">{example}</span>
-                    </div>
-                  )) : (
+                  {Array.isArray(obj.examples) ? (
+                    obj.examples.map((example: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></span>
+                        <span className="text-gray-700 leading-relaxed">
+                          {example}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
                     <div className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700 leading-relaxed">{obj.examples}</span>
+                      <span className="text-gray-700 leading-relaxed">
+                        {obj.examples}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -960,7 +1289,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         </div>
       );
     }
-    
+
     if (obj.description && obj.examples) {
       return (
         <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-6 border border-teal-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -970,25 +1299,37 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
             </div>
             <div className="flex-1 space-y-3">
               <div>
-                <span className="text-xs uppercase tracking-wide text-teal-600 font-semibold">Description</span>
-                <h4 className="text-lg font-bold text-teal-800 mt-1 leading-tight">{obj.description}</h4>
+                <span className="text-xs uppercase tracking-wide text-teal-600 font-semibold">
+                  Description
+                </span>
+                <h4 className="text-lg font-bold text-teal-800 mt-1 leading-tight">
+                  {obj.description}
+                </h4>
               </div>
-              
+
               <div className="bg-white/60 rounded-lg p-4 border border-teal-100">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-teal-600">📝</span>
-                  <span className="text-sm font-medium text-gray-700">Examples:</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    Examples:
+                  </span>
                 </div>
                 <div className="space-y-2">
-                  {Array.isArray(obj.examples) ? obj.examples.map((example: string, idx: number) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-teal-400 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700 leading-relaxed">{example}</span>
-                    </div>
-                  )) : (
+                  {Array.isArray(obj.examples) ? (
+                    obj.examples.map((example: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-teal-400 rounded-full mt-2 flex-shrink-0"></span>
+                        <span className="text-gray-700 leading-relaxed">
+                          {example}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
                     <div className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 bg-teal-400 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700 leading-relaxed">{obj.examples}</span>
+                      <span className="text-gray-700 leading-relaxed">
+                        {obj.examples}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -998,7 +1339,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         </div>
       );
     }
-    
+
     if (obj.rule && obj.examples) {
       return (
         <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -1008,25 +1349,37 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
             </div>
             <div className="flex-1 space-y-3">
               <div>
-                <span className="text-xs uppercase tracking-wide text-orange-600 font-semibold">Grammar Rule</span>
-                <h4 className="text-lg font-bold text-orange-800 mt-1 leading-tight">{obj.rule}</h4>
+                <span className="text-xs uppercase tracking-wide text-orange-600 font-semibold">
+                  Grammar Rule
+                </span>
+                <h4 className="text-lg font-bold text-orange-800 mt-1 leading-tight">
+                  {obj.rule}
+                </h4>
               </div>
-              
+
               <div className="bg-white/60 rounded-lg p-4 border border-orange-100">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-orange-600">📝</span>
-                  <span className="text-sm font-medium text-gray-700">Examples:</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    Examples:
+                  </span>
                 </div>
                 <div className="space-y-2">
-                  {Array.isArray(obj.examples) ? obj.examples.map((example: string, idx: number) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700 leading-relaxed">{example}</span>
-                    </div>
-                  )) : (
+                  {Array.isArray(obj.examples) ? (
+                    obj.examples.map((example: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-2 flex-shrink-0"></span>
+                        <span className="text-gray-700 leading-relaxed">
+                          {example}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
                     <div className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-2 flex-shrink-0"></span>
-                      <span className="text-gray-700 leading-relaxed">{obj.examples}</span>
+                      <span className="text-gray-700 leading-relaxed">
+                        {obj.examples}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -1036,7 +1389,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         </div>
       );
     }
-    
+
     // Fall back to safeRender for other objects
     return <span className="text-gray-700">{safeRender(obj)}</span>;
   };
@@ -1044,7 +1397,7 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
   // Special render function for arrays that might contain structured objects
   const renderDataArray = (data: any[]) => {
     if (!Array.isArray(data)) return safeRender(data);
-    
+
     return (
       <div className="space-y-3">
         {data.map((item, index) => (
@@ -1067,26 +1420,26 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
     if (data === null || data === undefined) {
       return <span className="text-gray-500 italic">No data available</span>;
     }
-    
+
     if (typeof data === "string") {
       return <span className="text-gray-700">{data}</span>;
     }
-    
+
     if (typeof data === "number" || typeof data === "boolean") {
       return <span className="text-gray-700">{String(data)}</span>;
     }
-    
+
     if (Array.isArray(data)) {
       if (data.length === 0) {
         return <span className="text-gray-500 italic">No items available</span>;
       }
       return renderDataArray(data);
     }
-    
+
     if (typeof data === "object") {
       return renderPatternObject(data);
     }
-    
+
     return <span className="text-gray-700">{safeRender(data)}</span>;
   };
 
@@ -1273,11 +1626,16 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
           },
         ]
       : []),
-    ...(getProperty(grammarData, "citations") || getProperty(grammarData, "references") || (getProperty(grammarData, "definition") && getProperty(getProperty(grammarData, "definition"), "references"))
+    ...(getProperty(grammarData, "citations") ||
+    getProperty(grammarData, "references") ||
+    (getProperty(grammarData, "definition") &&
+      getProperty(getProperty(grammarData, "definition"), "references"))
       ? [
           {
             id: "references",
-            title: getProperty(grammarData, "citations") ? "Citations" : "References",
+            title: getProperty(grammarData, "citations")
+              ? "Citations"
+              : "References",
             icon: <FileText className="h-4 w-4" />,
           },
         ]
@@ -1364,230 +1722,122 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         }
       `}</style>
       <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
-        {/* Table of Contents - Mobile Top */}
-        <div className="lg:hidden">
-          <TableOfContents sections={sections} className="mb-6" />
+        {/* Table of Contents - Mobile */}
+        <div className="lg:hidden mb-8">
+          <div className="bg-white border border-gray-200 rounded-xl p-4">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Quick Navigation
+            </h3>
+            <div className="grid grid-cols-2 gap-2">
+              {sections.slice(0, 6).map((section) => (
+                <a
+                  key={section.id}
+                  href={`#${section.id}`}
+                  className="flex items-center gap-2 p-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                >
+                  {section.icon}
+                  <span className="truncate">{section.title}</span>
+                </a>
+              ))}
+            </div>
+            {sections.length > 6 && (
+              <div className="mt-3 pt-3 border-t border-gray-200 text-center">
+                <span className="text-xs text-gray-500">
+                  +{sections.length - 6} more sections below
+                </span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-              <span>{grammarInfo.category.icon}</span>
-              <span>{grammarInfo.category.title}</span>
-              <span>/</span>
-              <span className="text-blue-600">{grammarInfo.item.title}</span>
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+              <span className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full">
+                <span>{grammarInfo.category.icon}</span>
+                <span>{grammarInfo.category.title}</span>
+              </span>
+              <span className="text-gray-300">/</span>
+              <span className="text-blue-600 font-medium">{grammarInfo.item.title}</span>
             </div>
 
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {formatTitle(grammarKey)}
-            </h1>
+            {/* Title and Description */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-4">
+                {formatTitle(grammarKey)}
+              </h1>
 
-            {grammarInfo.item.description && (
-              <p className="text-xl text-gray-600 mb-6">
-                {grammarInfo.item.description}
-              </p>
-            )}
+              {grammarInfo.item.description && (
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                  {grammarInfo.item.description}
+                </p>
+              )}
+            </div>
 
             {/* Metadata */}
-            <div className="flex flex-wrap gap-4 mb-6">
+            <div className="flex flex-wrap justify-center gap-4 mb-6">
               {getProperty(grammarData, "created") && (
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full text-sm text-gray-600">
                   <Calendar className="h-4 w-4" />
-                  <span>
-                    Created: {formatDate(getProperty(grammarData, "created"))}
-                  </span>
+                  <span>Created: {formatDate(getProperty(grammarData, "created"))}</span>
                 </div>
               )}
               {getProperty(grammarData, "updated") && (
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full text-sm text-gray-600">
                   <Clock className="h-4 w-4" />
-                  <span>
-                    Updated: {formatDate(getProperty(grammarData, "updated"))}
-                  </span>
+                  <span>Updated: {formatDate(getProperty(grammarData, "updated"))}</span>
                 </div>
               )}
-              <Badge variant="secondary" className="flex items-center gap-1">
+              <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2">
                 <Target className="h-3 w-3" />
                 {grammarInfo.category.title}
               </Badge>
             </div>
 
-            {/* Data Completeness Overview */}
-            <div
-              id="overview"
-              className="mb-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200"
-            >
-              <h3 className="font-semibold text-blue-800 mb-3">
-                📊 Comprehensive Data Overview
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 text-sm">
+            {/* Data Overview */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-blue-800 flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Content Overview
+                </h3>
+                <div className="text-sm text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+                  {
+                    [
+                      "theory", "forms", "usage", "examples", "commonMistakes", 
+                      "spellingRules", "pronunciationGuide", "learningTips"
+                    ].filter((key) => getProperty(grammarData, key)).length
+                  } / 8 core sections
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  {
-                    key: "theory",
-                    label: "📚 Theory",
-                    color: "bg-blue-100 text-blue-800",
-                  },
-                  {
-                    key: "forms",
-                    label: "📝 Forms",
-                    color: "bg-green-100 text-green-800",
-                  },
-                  {
-                    key: "usage",
-                    label: "🎯 Usage",
-                    color: "bg-purple-100 text-purple-800",
-                  },
-                  {
-                    key: "examples",
-                    label: "💡 Examples",
-                    color: "bg-yellow-100 text-yellow-800",
-                  },
-                  {
-                    key: "commonMistakes",
-                    label: "❌ Mistakes",
-                    color: "bg-red-100 text-red-800",
-                  },
-                  {
-                    key: "spellingRules",
-                    label: "✏️ Spelling",
-                    color: "bg-orange-100 text-orange-800",
-                  },
-                  {
-                    key: "pronunciationGuide",
-                    label: "🗣️ Pronunciation",
-                    color: "bg-pink-100 text-pink-800",
-                  },
-                  {
-                    key: "learningTips",
-                    label: "💡 Tips",
-                    color: "bg-cyan-100 text-cyan-800",
-                  },
-                  {
-                    key: "cefrLevelBreakdown",
-                    label: "📊 CEFR Levels",
-                    color: "bg-indigo-100 text-indigo-800",
-                  },
-                  {
-                    key: "extendedExamples",
-                    label: "📖 Extended Examples",
-                    color: "bg-emerald-100 text-emerald-800",
-                  },
-                  {
-                    key: "advancedUsagePatterns",
-                    label: "🎓 Advanced Usage",
-                    color: "bg-violet-100 text-violet-800",
-                  },
-                  {
-                    key: "culturalAndContextualUsage",
-                    label: "🌍 Cultural Context",
-                    color: "bg-teal-100 text-teal-800",
-                  },
-                  {
-                    key: "comprehensiveErrorAnalysis",
-                    label: "🔍 Error Analysis",
-                    color: "bg-rose-100 text-rose-800",
-                  },
-                  {
-                    key: "practiceExerciseTypes",
-                    label: "📋 Exercise Types",
-                    color: "bg-lime-100 text-lime-800",
-                  },
-                  {
-                    key: "learningProgression",
-                    label: "📈 Learning Path",
-                    color: "bg-amber-100 text-amber-800",
-                  },
-                  {
-                    key: "researchBasedInsights",
-                    label: "🔬 Research",
-                    color: "bg-sky-100 text-sky-800",
-                  },
-                  {
-                    key: "assessmentFramework",
-                    label: "📊 Assessment",
-                    color: "bg-slate-100 text-slate-800",
-                  },
-                  {
-                    key: "digitalLearningIntegration",
-                    label: "💻 Digital Tools",
-                    color: "bg-purple-100 text-purple-800",
-                  },
-                  {
-                    key: "crossLinguisticAnalysis",
-                    label: "🌐 Cross-Linguistic",
-                    color: "bg-green-100 text-green-800",
-                  },
-                  {
-                    key: "corpusBasedUsage",
-                    label: "📚 Corpus Data",
-                    color: "bg-blue-100 text-blue-800",
-                  },
-                  {
-                    key: "pedagogicalSequencing",
-                    label: "👨‍🏫 Teaching Order",
-                    color: "bg-red-100 text-red-800",
-                  },
-                  {
-                    key: "progressiveDifficulty",
-                    label: "⬆️ Difficulty Levels",
-                    color: "bg-orange-100 text-orange-800",
-                  },
-                  {
-                    key: "futureDirections",
-                    label: "🚀 Future Trends",
-                    color: "bg-pink-100 text-pink-800",
-                  },
-                  {
-                    key: "citations",
-                    label: "📑 References",
-                    color: "bg-cyan-100 text-cyan-800",
-                  },
+                  { key: "theory", label: "� Theory", color: "bg-blue-100 text-blue-800" },
+                  { key: "forms", label: "� Forms", color: "bg-green-100 text-green-800" },
+                  { key: "usage", label: "🎯 Usage", color: "bg-purple-100 text-purple-800" },
+                  { key: "examples", label: "💡 Examples", color: "bg-yellow-100 text-yellow-800" },
+                  { key: "commonMistakes", label: "❌ Common Mistakes", color: "bg-red-100 text-red-800" },
+                  { key: "spellingRules", label: "✏️ Spelling", color: "bg-orange-100 text-orange-800" },
+                  { key: "pronunciationGuide", label: "�️ Pronunciation", color: "bg-pink-100 text-pink-800" },
+                  { key: "learningTips", label: "� Learning Tips", color: "bg-cyan-100 text-cyan-800" },
                 ].map(({ key, label, color }) => (
                   <div
                     key={key}
-                    className={`px-2 py-1 rounded text-xs font-medium ${
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       getProperty(grammarData, key)
-                        ? color
+                        ? color + " border border-current border-opacity-20"
                         : "bg-gray-100 text-gray-500"
                     }`}
                   >
-                    {getProperty(grammarData, key) ? "✅" : "❌"} {label}
+                    <span className="mr-1">{getProperty(grammarData, key) ? "✅" : "⚪"}</span>
+                    {label}
                   </div>
                 ))}
-              </div>
-              <div className="mt-3 text-sm text-blue-700">
-                <strong>Data Completeness:</strong>{" "}
-                {
-                  [
-                    "theory",
-                    "forms",
-                    "usage",
-                    "examples",
-                    "commonMistakes",
-                    "spellingRules",
-                    "pronunciationGuide",
-                    "learningTips",
-                    "cefrLevelBreakdown",
-                    "extendedExamples",
-                    "advancedUsagePatterns",
-                    "culturalAndContextualUsage",
-                    "comprehensiveErrorAnalysis",
-                    "practiceExerciseTypes",
-                    "learningProgression",
-                    "researchBasedInsights",
-                    "assessmentFramework",
-                    "digitalLearningIntegration",
-                    "crossLinguisticAnalysis",
-                    "corpusBasedUsage",
-                    "pedagogicalSequencing",
-                    "progressiveDifficulty",
-                    "futureDirections",
-                    "citations",
-                  ].filter((key) => getProperty(grammarData, key)).length
-                }{" "}
-                out of 24 comprehensive sections available
               </div>
             </div>
           </div>
@@ -1619,12 +1869,14 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
               getProperty(grammarData, "reportedQuestionsDefinition") ||
               getProperty(grammarData, "extendedDefinition") ||
               getProperty(grammarData, "academicDefinition")) && (
-              <section id="definition" className="bg-blue-50 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookOpen className="h-6 w-6" />
-                  Definition
-                </h2>
-                <div className="space-y-4">
+              <section id="definition" className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-200">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                    <BookOpen className="h-5 w-5 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900">Definition</h2>
+                </div>
+                <div className="space-y-6">
                   {/* Get the definition data */}
                   {(() => {
                     const definition =
@@ -1677,84 +1929,89 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
 
                     return (
                       <>
-                        {/* Handle concept-based definition structure (modalVerbsDefinition, articlesDefinition, etc.) */}
+                        {/* Handle concept-based definition structure */}
                         {getProperty(definition, "concept") && (
-                          <div className="p-4 bg-white rounded-lg border-l-4 border-blue-400">
-                            <h3 className="font-semibold text-gray-800 mb-2">
+                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-blue-400 shadow-sm">
+                            <h3 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                              <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
                               Concept
                             </h3>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 leading-relaxed">
                               {getProperty(definition, "concept")}
                             </p>
                           </div>
                         )}
 
                         {getProperty(definition, "importance") && (
-                          <div className="p-4 bg-white rounded-lg border-l-4 border-green-400">
-                            <h3 className="font-semibold text-gray-800 mb-2">
+                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-emerald-400 shadow-sm">
+                            <h3 className="font-semibold text-emerald-800 mb-3 flex items-center gap-2">
+                              <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
                               Importance
                             </h3>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 leading-relaxed">
                               {getProperty(definition, "importance")}
                             </p>
                           </div>
                         )}
 
                         {getProperty(definition, "corePrinciple") && (
-                          <div className="p-4 bg-white rounded-lg border-l-4 border-purple-400">
-                            <h3 className="font-semibold text-gray-800 mb-2">
+                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-purple-400 shadow-sm">
+                            <h3 className="font-semibold text-purple-800 mb-3 flex items-center gap-2">
+                              <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
                               Core Principle
                             </h3>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 leading-relaxed">
                               {getProperty(definition, "corePrinciple")}
                             </p>
                           </div>
                         )}
 
                         {getProperty(definition, "scope") && (
-                          <div className="p-4 bg-white rounded-lg border-l-4 border-orange-400">
-                            <h3 className="font-semibold text-gray-800 mb-2">
+                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-orange-400 shadow-sm">
+                            <h3 className="font-semibold text-orange-800 mb-3 flex items-center gap-2">
+                              <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
                               Scope
                             </h3>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 leading-relaxed">
                               {getProperty(definition, "scope")}
                             </p>
                           </div>
                         )}
 
                         {getProperty(definition, "linguisticBackground") && (
-                          <div className="p-4 bg-white rounded-lg border-l-4 border-indigo-400">
-                            <h3 className="font-semibold text-gray-800 mb-2">
+                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-indigo-400 shadow-sm">
+                            <h3 className="font-semibold text-indigo-800 mb-3 flex items-center gap-2">
+                              <span className="w-2 h-2 bg-indigo-400 rounded-full"></span>
                               Linguistic Background
                             </h3>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 leading-relaxed">
                               {getProperty(definition, "linguisticBackground")}
                             </p>
                           </div>
                         )}
 
-
-
-                        {/* Handle standardized definition structure (simple, extended, academic, linguistic, comprehensive) */}
+                        {/* Handle standardized definition structure */}
                         {getProperty(definition, "simple") && (
                           <>
                             {/* Simple Definition */}
-                            <div className="p-4 bg-white rounded-lg border-l-4 border-blue-400">
-                              <h3 className="font-semibold text-gray-800 mb-2">
+                            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-blue-400 shadow-sm">
+                              <h3 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                                <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
                                 Simple Definition
                               </h3>
-                              <p className="text-gray-700">
+                              <p className="text-gray-700 leading-relaxed">
                                 {getProperty(definition, "simple")}
                               </p>
                             </div>
 
                             {/* Extended Definition */}
                             {getProperty(definition, "extended") && (
-                              <div className="p-4 bg-white rounded-lg border-l-4 border-green-400">
-                                <h3 className="font-semibold text-gray-800 mb-2">
+                              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-emerald-400 shadow-sm">
+                                <h3 className="font-semibold text-emerald-800 mb-3 flex items-center gap-2">
+                                  <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
                                   Extended Definition
                                 </h3>
-                                <p className="text-gray-700">
+                                <p className="text-gray-700 leading-relaxed">
                                   {getProperty(definition, "extended")}
                                 </p>
                               </div>
@@ -1762,11 +2019,12 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
 
                             {/* Academic Definition */}
                             {getProperty(definition, "academic") && (
-                              <div className="p-4 bg-white rounded-lg border-l-4 border-purple-400">
-                                <h3 className="font-semibold text-gray-800 mb-2">
+                              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-purple-400 shadow-sm">
+                                <h3 className="font-semibold text-purple-800 mb-3 flex items-center gap-2">
+                                  <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
                                   Academic Definition
                                 </h3>
-                                <p className="text-gray-700">
+                                <p className="text-gray-700 leading-relaxed">
                                   {getProperty(definition, "academic")}
                                 </p>
                               </div>
@@ -1774,11 +2032,12 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
 
                             {/* Linguistic Definition */}
                             {getProperty(definition, "linguistic") && (
-                              <div className="p-4 bg-white rounded-lg border-l-4 border-orange-400">
-                                <h3 className="font-semibold text-gray-800 mb-2">
+                              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-orange-400 shadow-sm">
+                                <h3 className="font-semibold text-orange-800 mb-3 flex items-center gap-2">
+                                  <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
                                   Linguistic Definition
                                 </h3>
-                                <p className="text-gray-700">
+                                <p className="text-gray-700 leading-relaxed">
                                   {getProperty(definition, "linguistic")}
                                 </p>
                               </div>
@@ -1786,11 +2045,12 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
 
                             {/* Comprehensive Definition */}
                             {getProperty(definition, "comprehensive") && (
-                              <div className="p-4 bg-white rounded-lg border-l-4 border-red-400">
-                                <h3 className="font-semibold text-gray-800 mb-2">
+                              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-red-400 shadow-sm">
+                                <h3 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
+                                  <span className="w-2 h-2 bg-red-400 rounded-full"></span>
                                   Comprehensive Definition
                                 </h3>
-                                <p className="text-gray-700">
+                                <p className="text-gray-700 leading-relaxed">
                                   {getProperty(definition, "comprehensive")}
                                 </p>
                               </div>
@@ -1932,12 +2192,14 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
 
             {/* CEFR Levels */}
             {getProperty(grammarData, "cefrLevels") && (
-              <section id="levels" className="bg-green-50 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <GraduationCap className="h-6 w-6" />
-                  CEFR Levels
-                </h2>
-                <div className="grid gap-4">
+              <section id="levels" className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-8 border border-emerald-200">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
+                    <GraduationCap className="h-5 w-5 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900">CEFR Levels</h2>
+                </div>
+                <div className="grid gap-6">
                   {Object.entries(
                     getProperty(grammarData, "cefrLevels") as Record<
                       string,
@@ -1946,11 +2208,14 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                   ).map(([level, data]) => (
                     <div
                       key={level}
-                      className="bg-white rounded-lg border-l-4 border-green-400 p-4"
+                      className="bg-white/80 backdrop-blur-sm rounded-xl border border-emerald-200 p-6 shadow-sm hover:shadow-lg transition-all duration-300"
                     >
-                      <h3 className="font-semibold text-gray-800 mb-2 text-lg uppercase">
-                        {level}
-                      </h3>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">{level}</span>
+                        </div>
+                        <h3 className="font-semibold text-gray-800 text-lg">Level {level}</h3>
+                      </div>
                       {typeof data === "object" && data !== null ? (
                         <div className="space-y-2">
                           {getProperty(data, "definition") && (
@@ -2081,12 +2346,14 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
             {(getProperty(grammarData, "abstract_nouns_vocab") ||
               getProperty(grammarData, "vocabulary") ||
               getProperty(grammarData, "vocab")) && (
-              <section id="vocabulary" className="bg-purple-50 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookOpen className="h-6 w-6" />
-                  Vocabulary
-                </h2>
-                <div className="grid gap-4">
+              <section id="vocabulary" className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-8 border border-purple-200">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center">
+                    <BookOpen className="h-5 w-5 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900">Vocabulary</h2>
+                </div>
+                <div className="grid gap-6">
                   {(() => {
                     const vocabData =
                       getProperty(grammarData, "abstract_nouns_vocab") ||
@@ -2099,27 +2366,27 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                           {vocabData.map((item, index) => (
                             <div
                               key={index}
-                              className="bg-white p-4 rounded-lg border-l-4 border-purple-400"
+                              className="bg-white/80 backdrop-blur-sm p-5 rounded-xl border border-purple-200 shadow-sm hover:shadow-lg transition-all duration-300"
                             >
                               {typeof item === "string" ? (
                                 <p className="text-gray-700 font-medium">
                                   {item}
                                 </p>
                               ) : (
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                   {getProperty(item, "word") && (
-                                    <p className="text-gray-800 font-bold">
+                                    <p className="text-gray-800 font-bold text-lg">
                                       {getProperty(item, "word")}
                                     </p>
                                   )}
                                   {getProperty(item, "definition") && (
-                                    <p className="text-gray-600 text-sm">
+                                    <p className="text-gray-600 leading-relaxed">
                                       {getProperty(item, "definition")}
                                     </p>
                                   )}
                                   {getProperty(item, "example") && (
-                                    <p className="text-gray-500 text-xs italic">
-                                      {getProperty(item, "example")}
+                                    <p className="text-gray-500 text-sm italic bg-gray-50 p-3 rounded-lg">
+                                      "{getProperty(item, "example")}"
                                     </p>
                                   )}
                                 </div>
@@ -2133,19 +2400,18 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                       vocabData !== null
                     ) {
                       return (
-                        <div className="grid gap-4">
+                        <div className="space-y-6">
                           {Object.entries(vocabData).map(
                             ([category, items]) => (
                               <div
                                 key={category}
-                                className="bg-white rounded-lg p-4"
+                                className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-purple-200 shadow-sm"
                               >
-                                <h3 className="font-semibold text-gray-800 mb-3 capitalize">
-                                  {category
-                                    .replace(/([A-Z])/g, " $1")
-                                    .toLowerCase()}
+                                <h3 className="font-semibold text-purple-800 mb-4 text-lg capitalize flex items-center gap-2">
+                                  <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
+                                  {category.replace(/([A-Z])/g, " $1").toLowerCase()}
                                 </h3>
-                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                                   {Array.isArray(items) ? (
                                     items.map((item, index) => (
                                       <span
@@ -2171,7 +2437,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                       );
                     }
 
-                    return <div className="text-gray-700">{renderUniversalData(vocabData)}</div>;
+                    return (
+                      <div className="text-gray-700">
+                        {renderUniversalData(vocabData)}
+                      </div>
+                    );
                   })()}
                 </div>
               </section>
@@ -2661,18 +2931,23 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                                 </div>
                               )}
                               {/* Handle any other properties as universal data */}
-                              {Object.entries(item).filter(([key]) => 
-                                !['type', 'structure', 'example'].includes(key)
-                              ).map(([key, value]) => (
-                                <div key={key} className="mt-2">
-                                  <span className="font-medium text-gray-700 capitalize">
-                                    {key.replace(/([A-Z])/g, " $1")}: 
-                                  </span>
-                                  <div className="ml-4">
-                                    {renderUniversalData(value)}
+                              {Object.entries(item)
+                                .filter(
+                                  ([key]) =>
+                                    !["type", "structure", "example"].includes(
+                                      key
+                                    )
+                                )
+                                .map(([key, value]) => (
+                                  <div key={key} className="mt-2">
+                                    <span className="font-medium text-gray-700 capitalize">
+                                      {key.replace(/([A-Z])/g, " $1")}:
+                                    </span>
+                                    <div className="ml-4">
+                                      {renderUniversalData(value)}
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                ))}
                             </div>
                           ) : (
                             <div>{renderUniversalData(item)}</div>
@@ -2815,18 +3090,27 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                                 </div>
                               )}
                               {/* Handle any other properties as universal data */}
-                              {Object.entries(usage).filter(([key]) => 
-                                !['type', 'use', 'description', 'example', 'explanation'].includes(key)
-                              ).map(([key, value]) => (
-                                <div key={key} className="mt-2">
-                                  <span className="font-medium text-gray-700 capitalize">
-                                    {key.replace(/([A-Z])/g, " $1")}: 
-                                  </span>
-                                  <div className="ml-4">
-                                    {renderUniversalData(value)}
+                              {Object.entries(usage)
+                                .filter(
+                                  ([key]) =>
+                                    ![
+                                      "type",
+                                      "use",
+                                      "description",
+                                      "example",
+                                      "explanation",
+                                    ].includes(key)
+                                )
+                                .map(([key, value]) => (
+                                  <div key={key} className="mt-2">
+                                    <span className="font-medium text-gray-700 capitalize">
+                                      {key.replace(/([A-Z])/g, " $1")}:
+                                    </span>
+                                    <div className="ml-4">
+                                      {renderUniversalData(value)}
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                ))}
                             </div>
                           ) : (
                             <div>{renderUniversalData(usage)}</div>
@@ -3818,7 +4102,9 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                                 ))}
                             </div>
                           ) : (
-                            <div className="text-sm">{renderUniversalData(data)}</div>
+                            <div className="text-sm">
+                              {renderUniversalData(data)}
+                            </div>
                           )}
                         </div>
                       ))}
@@ -4209,7 +4495,9 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                       )
                     )
                   ) : (
-                    <div>{renderUniversalData(getProperty(grammarData, "rules"))}</div>
+                    <div>
+                      {renderUniversalData(getProperty(grammarData, "rules"))}
+                    </div>
                   )}
                 </div>
               </section>
@@ -4236,7 +4524,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                       )
                     )
                   ) : (
-                    <div>{renderUniversalData(getProperty(grammarData, "patterns"))}</div>
+                    <div>
+                      {renderUniversalData(
+                        getProperty(grammarData, "patterns")
+                      )}
+                    </div>
                   )}
                 </div>
               </section>
@@ -4261,7 +4553,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                       )
                     )
                   ) : (
-                    <div>{renderUniversalData(getProperty(grammarData, "concepts"))}</div>
+                    <div>
+                      {renderUniversalData(
+                        getProperty(grammarData, "concepts")
+                      )}
+                    </div>
                   )}
                 </div>
               </section>
@@ -4305,7 +4601,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                       ))}
                     </div>
                   ) : (
-                    <div>{renderUniversalData(getProperty(grammarData, "functions"))}</div>
+                    <div>
+                      {renderUniversalData(
+                        getProperty(grammarData, "functions")
+                      )}
+                    </div>
                   )}
                 </div>
               </section>
@@ -4353,18 +4653,25 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                                     </div>
                                   )}
                                   {/* Handle any other properties */}
-                                  {Object.entries(mistake).filter(([key]) => 
-                                    !['error', 'correction', 'explanation'].includes(key)
-                                  ).map(([key, value]) => (
-                                    <div key={key} className="mt-2">
-                                      <span className="font-medium text-gray-700 capitalize">
-                                        {key.replace(/([A-Z])/g, " $1")}: 
-                                      </span>
-                                      <div className="ml-4">
-                                        {renderUniversalData(value)}
+                                  {Object.entries(mistake)
+                                    .filter(
+                                      ([key]) =>
+                                        ![
+                                          "error",
+                                          "correction",
+                                          "explanation",
+                                        ].includes(key)
+                                    )
+                                    .map(([key, value]) => (
+                                      <div key={key} className="mt-2">
+                                        <span className="font-medium text-gray-700 capitalize">
+                                          {key.replace(/([A-Z])/g, " $1")}:
+                                        </span>
+                                        <div className="ml-4">
+                                          {renderUniversalData(value)}
+                                        </div>
                                       </div>
-                                    </div>
-                                  ))}
+                                    ))}
                                 </div>
                               )}
                             </div>
@@ -4372,7 +4679,9 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                         )
                       ) : (
                         <div>
-                          {renderUniversalData(getProperty(grammarData, "mistakes"))}
+                          {renderUniversalData(
+                            getProperty(grammarData, "mistakes")
+                          )}
                         </div>
                       )}
                     </div>
@@ -4397,7 +4706,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                           )
                         )
                       ) : (
-                        <div>{renderUniversalData(getProperty(grammarData, "errors"))}</div>
+                        <div>
+                          {renderUniversalData(
+                            getProperty(grammarData, "errors")
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -4421,7 +4734,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                           )
                         )
                       ) : (
-                        <div>{renderUniversalData(getProperty(grammarData, "pitfalls"))}</div>
+                        <div>
+                          {renderUniversalData(
+                            getProperty(grammarData, "pitfalls")
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -4454,7 +4771,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                           )
                         )
                       ) : (
-                        <div>{renderUniversalData(getProperty(grammarData, "tips"))}</div>
+                        <div>
+                          {renderUniversalData(
+                            getProperty(grammarData, "tips")
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -4476,7 +4797,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                           )
                         )
                       ) : (
-                        <div>{renderUniversalData(getProperty(grammarData, "hints"))}</div>
+                        <div>
+                          {renderUniversalData(
+                            getProperty(grammarData, "hints")
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -4500,7 +4825,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                           )
                         )
                       ) : (
-                        <div>{renderUniversalData(getProperty(grammarData, "reminders"))}</div>
+                        <div>
+                          {renderUniversalData(
+                            getProperty(grammarData, "reminders")
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -4527,7 +4856,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                       )
                     )
                   ) : (
-                    <div>{renderUniversalData(getProperty(grammarData, "applications"))}</div>
+                    <div>
+                      {renderUniversalData(
+                        getProperty(grammarData, "applications")
+                      )}
+                    </div>
                   )}
                 </div>
               </section>
@@ -4551,13 +4884,19 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                             <div className="w-6 h-6 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                               {index + 1}
                             </div>
-                            <div className="flex-1">{renderUniversalData(exercise)}</div>
+                            <div className="flex-1">
+                              {renderUniversalData(exercise)}
+                            </div>
                           </div>
                         </div>
                       )
                     )
                   ) : (
-                    <div>{renderUniversalData(getProperty(grammarData, "exercises"))}</div>
+                    <div>
+                      {renderUniversalData(
+                        getProperty(grammarData, "exercises")
+                      )}
+                    </div>
                   )}
                 </div>
               </section>
@@ -4582,7 +4921,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                       )
                     )
                   ) : (
-                    <div>{renderUniversalData(getProperty(grammarData, "memoryAids"))}</div>
+                    <div>
+                      {renderUniversalData(
+                        getProperty(grammarData, "memoryAids")
+                      )}
+                    </div>
                   )}
                 </div>
               </section>
@@ -4686,7 +5029,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                     </h2>
                     <div className="space-y-4">
                       {typeof data === "string" ? (
-                        renderVerbCategories(data) || renderWordList(data) || renderCategoricalList(data) || <p className="text-gray-700">{data}</p>
+                        renderVerbCategories(data) ||
+                        renderWordList(data) ||
+                        renderCategoricalList(data) || (
+                          <p className="text-gray-700">{data}</p>
+                        )
                       ) : Array.isArray(data) ? (
                         <div className="grid gap-3">
                           {data.map((item, index) => (
@@ -4695,7 +5042,10 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                               className="p-3 bg-gray-50 rounded-lg"
                             >
                               {typeof item === "string" ? (
-                                renderVerbCategories(item) || renderCategoricalList(item) || <p className="text-gray-700">{item}</p>
+                                renderVerbCategories(item) ||
+                                renderCategoricalList(item) || (
+                                  <p className="text-gray-700">{item}</p>
+                                )
                               ) : (
                                 <div className="space-y-2">
                                   {Object.entries(item || {}).map(
@@ -4734,7 +5084,11 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                                     .toLowerCase()}
                                 </h3>
                                 {typeof subValue === "string" ? (
-                                  renderVerbCategories(subValue) || renderWordList(subValue) || renderCategoricalList(subValue) || <p className="text-gray-700">{subValue}</p>
+                                  renderVerbCategories(subValue) ||
+                                  renderWordList(subValue) ||
+                                  renderCategoricalList(subValue) || (
+                                    <p className="text-gray-700">{subValue}</p>
+                                  )
                                 ) : Array.isArray(subValue) ? (
                                   <ul className="space-y-1">
                                     {subValue.map((item, index) => (
@@ -4782,7 +5136,9 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                           )}
                         </div>
                       ) : (
-                        <div className="text-gray-700">{renderUniversalData(data)}</div>
+                        <div className="text-gray-700">
+                          {renderUniversalData(data)}
+                        </div>
                       )}
                     </div>
                   </section>
@@ -4827,8 +5183,8 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
               if (!references) return null;
 
               // Determine title based on available data
-              const sectionTitle = getProperty(grammarData, "citations") 
-                ? "Citations" 
+              const sectionTitle = getProperty(grammarData, "citations")
+                ? "Citations"
                 : "References";
 
               return (
@@ -4921,7 +5277,9 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                                               </span>
                                             )
                                           ) : (
-                                            <div>{renderUniversalData(item)}</div>
+                                            <div>
+                                              {renderUniversalData(item)}
+                                            </div>
                                           )}
                                         </div>
                                       </li>
@@ -4951,9 +5309,9 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                     {/* Footer note */}
                     <div className="mt-6 pt-4 border-t border-gray-200">
                       <p className="text-sm text-gray-500 italic">
-                        All {sectionTitle.toLowerCase()} are cited for educational purposes.
-                        Please refer to original sources for complete
-                        information.
+                        All {sectionTitle.toLowerCase()} are cited for
+                        educational purposes. Please refer to original sources
+                        for complete information.
                       </p>
                     </div>
                   </div>
@@ -4963,11 +5321,17 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
           </div>
 
           {/* Navigation to related topics */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Related Topics
-            </h3>
-            <div className="flex flex-wrap gap-2">
+          {/* Related Topics */}
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                Explore Related Topics
+              </h3>
+              <p className="text-gray-600">
+                Continue your grammar journey with these related concepts
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {grammarInfo.category.items
                 .filter((item) => item.key !== grammarKey)
                 .slice(0, 8)
@@ -4977,20 +5341,44 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
                     href={`/grammar/${item.key
                       .toLowerCase()
                       .replace(/_/g, "-")}`}
-                    className="hover:opacity-80 transition-opacity"
+                    className="group p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
                   >
-                    <Badge variant="outline">
+                    <div className="text-sm font-medium text-gray-700 group-hover:text-blue-700 transition-colors">
                       {item.title.replace(/_/g, " ")}
-                    </Badge>
+                    </div>
+                    <div className="w-full h-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mt-2 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                   </a>
                 ))}
             </div>
           </div>
         </div>
 
-        {/* Table of Contents Sidebar - Desktop Only */}
+        {/* Table of Contents Sidebar - Desktop */}
         <div className="hidden lg:block w-80 flex-shrink-0">
-          <TableOfContents sections={sections} />
+          <div className="sticky top-24">
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Table of Contents
+              </h3>
+              <nav className="space-y-2">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    className="flex items-center gap-3 p-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 group"
+                  >
+                    <span className="text-blue-400 group-hover:text-blue-600 transition-colors">
+                      {section.icon}
+                    </span>
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      {section.title}
+                    </span>
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
     </GrammarLayout>

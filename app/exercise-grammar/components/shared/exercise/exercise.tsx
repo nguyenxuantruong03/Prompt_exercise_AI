@@ -62,6 +62,14 @@ interface ExerciseGrammarProps {
     SetStateAction<MiniExerciseSuggestionType | null>
   >;
   autoAnalyzeEnabled: boolean;
+  // Lightning game props
+  lightningGameActive?: boolean;
+  currentLightningQuestion?: number;
+  onLightningQuestionComplete?: () => void;
+  lightningScore?: { correct: number; total: number };
+  setLightningScore?: Dispatch<
+    SetStateAction<{ correct: number; total: number }>
+  >;
 }
 
 const ExerciseGrammar: React.FC<ExerciseGrammarProps> = ({
@@ -88,6 +96,11 @@ const ExerciseGrammar: React.FC<ExerciseGrammarProps> = ({
   inputText,
   setMiniExerciseSuggestion,
   autoAnalyzeEnabled,
+  lightningGameActive,
+  currentLightningQuestion,
+  onLightningQuestionComplete,
+  lightningScore,
+  setLightningScore,
 }) => {
   // Use the score calculator hook
   const { createCalculateAndShowScore } = useScoreCalculator();
@@ -125,7 +138,12 @@ const ExerciseGrammar: React.FC<ExerciseGrammarProps> = ({
 
   // Auto-analyze all questions when autoAnalyzeEnabled is true
   useEffect(() => {
-    if (autoAnalyzeEnabled && exercise?.questions) {
+    // Don't auto-analyze for lightning games
+    if (
+      autoAnalyzeEnabled &&
+      exercise?.questions &&
+      exercise.type !== "true-false-lightning"
+    ) {
       const analyzed: Record<number, AnalyzedSentence> = {};
 
       exercise.questions.forEach((question) => {
@@ -138,8 +156,11 @@ const ExerciseGrammar: React.FC<ExerciseGrammarProps> = ({
       });
 
       setAutoAnalyzedQuestions(analyzed);
-    } else if (!autoAnalyzeEnabled) {
-      // Clear auto-analyzed questions when disabled
+    } else if (
+      !autoAnalyzeEnabled ||
+      exercise?.type === "true-false-lightning"
+    ) {
+      // Clear auto-analyzed questions when disabled or for lightning games
       setAutoAnalyzedQuestions({});
     }
   }, [autoAnalyzeEnabled, exercise]);
@@ -241,30 +262,99 @@ const ExerciseGrammar: React.FC<ExerciseGrammarProps> = ({
           proficiencyLevel={proficiencyLevel}
         />
 
-        {exercise.questions.map((question) => (
-          <QuestionItem
-            key={question.id}
-            question={question}
-            showResults={showResults}
-            showHints={showHints}
-            selectedAnswers={selectedAnswers}
-            autoAnalyzedQuestions={autoAnalyzedQuestions}
-            autoAnalyzeEnabled={autoAnalyzeEnabled}
-            loading={loading}
-            toggleHint={toggleHint}
-            handleAnswerSelect={handleAnswerSelect}
-            handleInputAnswer={handleInputAnswer}
-            handleGrammarAnalysis={handleGrammarAnalysis}
-            setSelectedElement={setSelectedElement}
-            setShowElementModal={setShowElementModal}
-            generateExercise={generateExercise}
-            setExercise={setExercise}
-            setShowResults={setShowResults}
-            setInputText={setInputText}
-            setSelectedAnswers={setSelectedAnswers}
-            handleSuggestionClick={handleSuggestionClick}
-          />
-        ))}
+        {/* Lightning Game - Show one question at a time */}
+        {exercise.type === "true-false-lightning" && lightningGameActive ? (
+          <div className="space-y-4">
+            {/* Lightning Game Progress */}
+            <div className="bg-gradient-to-r from-purple-500 to-blue-600 text-white p-4 rounded-lg">
+              <div className="flex justify-between items-center">
+                <div className="text-sm font-medium">
+                  Question {(currentLightningQuestion || 0) + 1} of{" "}
+                  {exercise.questions.length}
+                </div>
+                <div className="text-sm font-medium">
+                  {lightningScore?.total ? (
+                    <>
+                      <span className="text-green-300">
+                        {lightningScore.correct} right
+                      </span>
+                      <span className="mx-1">/</span>
+                      <span className="text-red-300">
+                        {lightningScore.total - lightningScore.correct} wrong
+                      </span>
+                    </>
+                  ) : (
+                    "Ready to start!"
+                  )}
+                </div>
+              </div>
+              <div className="mt-2 bg-white/20 rounded-full h-2">
+                <div
+                  className="bg-white h-2 rounded-full transition-all duration-300"
+                  style={{
+                    width: `${
+                      (((currentLightningQuestion || 0) + 1) /
+                        exercise.questions.length) *
+                      100
+                    }%`,
+                  }}
+                />
+              </div>
+            </div>
+
+            {exercise.questions[currentLightningQuestion || 0] && (
+              <QuestionItem
+                key={exercise.questions[currentLightningQuestion || 0].id}
+                question={exercise.questions[currentLightningQuestion || 0]}
+                showResults={showResults}
+                showHints={showHints}
+                selectedAnswers={selectedAnswers}
+                autoAnalyzedQuestions={autoAnalyzedQuestions}
+                autoAnalyzeEnabled={autoAnalyzeEnabled}
+                loading={loading}
+                toggleHint={toggleHint}
+                handleAnswerSelect={handleAnswerSelect}
+                handleInputAnswer={handleInputAnswer}
+                handleGrammarAnalysis={handleGrammarAnalysis}
+                setSelectedElement={setSelectedElement}
+                setShowElementModal={setShowElementModal}
+                generateExercise={generateExercise}
+                setExercise={setExercise}
+                setShowResults={setShowResults}
+                setInputText={setInputText}
+                setSelectedAnswers={setSelectedAnswers}
+                handleSuggestionClick={handleSuggestionClick}
+                onLightningQuestionComplete={onLightningQuestionComplete}
+              />
+            )}
+          </div>
+        ) : (
+          // Regular exercises - show all questions
+          exercise.questions.map((question) => (
+            <QuestionItem
+              key={question.id}
+              question={question}
+              showResults={showResults}
+              showHints={showHints}
+              selectedAnswers={selectedAnswers}
+              autoAnalyzedQuestions={autoAnalyzedQuestions}
+              autoAnalyzeEnabled={autoAnalyzeEnabled}
+              loading={loading}
+              toggleHint={toggleHint}
+              handleAnswerSelect={handleAnswerSelect}
+              handleInputAnswer={handleInputAnswer}
+              handleGrammarAnalysis={handleGrammarAnalysis}
+              setSelectedElement={setSelectedElement}
+              setShowElementModal={setShowElementModal}
+              generateExercise={generateExercise}
+              setExercise={setExercise}
+              setShowResults={setShowResults}
+              setInputText={setInputText}
+              setSelectedAnswers={setSelectedAnswers}
+              handleSuggestionClick={handleSuggestionClick}
+            />
+          ))
+        )}
 
         <ExerciseActions
           showResults={showResults}

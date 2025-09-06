@@ -1,0 +1,4 @@
+1. Làm bài tập back up nhiều hơn đảm bảo khi API lỗi sẽ có backup tạo ngẫu nhiên tránh lỗi.
+ - Backup phải đảm bảo mỗi level, mỗi chứng chỉ, mỗi type exercise, mỗi topic phải có ít nhất 10 bài tập backup.
+2. grammar tạo thêm dựa vào file grammar-do-later tạo thêm 
+3. Grammar data static chỉnh lại cho đồng bộ hơn.

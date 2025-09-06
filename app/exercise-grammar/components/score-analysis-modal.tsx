@@ -60,10 +60,11 @@ const ScoreAnalysisModal: React.FC<ScoreAnalysisModalProps> = ({
           <div className="grid md:grid-cols-3 gap-6 mb-6">
             <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-lg border border-blue-200 dark:border-blue-700">
               <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-                {userScore.correct}/{userScore.total}
+                {userScore.correct} right /{" "}
+                {userScore.total - userScore.correct} wrong
               </div>
               <div className="text-lg text-blue-800 dark:text-blue-200">
-                Questions Correct
+                Questions Result
               </div>
             </div>
 
@@ -226,7 +227,8 @@ const ScoreAnalysisModal: React.FC<ScoreAnalysisModalProps> = ({
             <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
               <p>
                 <strong>
-                  Your performance ({userScore.correct}/{userScore.total}):
+                  Your performance ({userScore.correct} right /{" "}
+                  {userScore.total - userScore.correct} wrong):
                 </strong>{" "}
                 If this were an IELTS test with 40 questions, you would get
                 approximately{" "}

@@ -1,6 +1,12 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Question } from "@/types/grammars/grammars_type";
+import ContextMatchingQuestion from "./context-matching-question";
+import PassiveActiveMatching from "./passive-active-matching";
+import ClauseCombining from "./clause-combining";
+import MultiTopicIntegration from "./multi-topic-integration";
+import GrammarGeneratorQuestion from "./grammar-generator-question";
+import TrueFalseLightningQuestion from "./true-false-lightning-question";
 
 interface QuestionRendererProps {
   question: Question;
@@ -8,6 +14,7 @@ interface QuestionRendererProps {
   showResults: boolean;
   handleAnswerSelect: (questionId: number, answerIndex: number) => void;
   handleInputAnswer: (questionId: number, answer: string) => void;
+  onQuestionComplete?: () => void; // For lightning game
 }
 
 const QuestionRenderer: React.FC<QuestionRendererProps> = ({
@@ -16,7 +23,81 @@ const QuestionRenderer: React.FC<QuestionRendererProps> = ({
   showResults,
   handleAnswerSelect,
   handleInputAnswer,
+  onQuestionComplete,
 }) => {
+  // Grammar Generator questions
+  if (question.type === "grammar-generator") {
+    return (
+      <GrammarGeneratorQuestion
+        question={question}
+        selectedAnswers={selectedAnswers}
+        showResults={showResults}
+        handleInputAnswer={handleInputAnswer}
+      />
+    );
+  }
+
+  // True/False Lightning questions
+  if (question.type === "true-false-lightning") {
+    return (
+      <TrueFalseLightningQuestion
+        question={question}
+        selectedAnswers={selectedAnswers}
+        showResults={showResults}
+        handleAnswerSelect={handleAnswerSelect}
+        onQuestionComplete={onQuestionComplete}
+      />
+    );
+  }
+  // Context matching questions
+  if (question.type === "context-matching") {
+    return (
+      <ContextMatchingQuestion
+        question={question}
+        selectedAnswers={selectedAnswers}
+        showResults={showResults}
+        handleAnswerSelect={handleAnswerSelect}
+      />
+    );
+  }
+
+  // Passive-Active matching questions
+  if (question.type === "passive-active-matching") {
+    return (
+      <PassiveActiveMatching
+        question={question}
+        selectedAnswers={selectedAnswers}
+        showResults={showResults}
+        handleAnswerSelect={handleAnswerSelect}
+      />
+    );
+  }
+
+  // Clause combining questions
+  if (question.type === "clause-combining") {
+    return (
+      <ClauseCombining
+        question={question}
+        selectedAnswers={selectedAnswers}
+        showResults={showResults}
+        handleAnswerSelect={handleAnswerSelect}
+      />
+    );
+  }
+
+  // Multi-topic integration questions
+  if (question.type === "multi-topic-integration") {
+    return (
+      <MultiTopicIntegration
+        question={question}
+        selectedAnswers={selectedAnswers}
+        showResults={showResults}
+        handleAnswerSelect={handleAnswerSelect}
+        handleInputAnswer={handleInputAnswer}
+      />
+    );
+  }
+
   // Multiple choice questions
   if (
     (question.type === "multiple-choice" ||
@@ -28,7 +109,8 @@ const QuestionRenderer: React.FC<QuestionRendererProps> = ({
       question.type === "word-formation" ||
       question.type === "sentence-combining" ||
       question.type === "dialogue-completion" ||
-      question.type === "punctuation") &&
+      question.type === "punctuation" ||
+      question.type === "comparison-exercise") &&
     question.options &&
     question.options.length > 0
   ) {
