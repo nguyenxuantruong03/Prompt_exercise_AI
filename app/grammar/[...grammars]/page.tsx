@@ -71,66 +71,45 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
   if (!grammarKey) {
     return (
       <GrammarLayout>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center py-16">
-            <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center py-12">
+            {/* Simplified Header */}
+            <h1 className="text-3xl font-bold text-gray-900 mb-3">
               Grammar Guide
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Master English grammar with our comprehensive collection
+            <p className="text-gray-600 mb-12">
+              Choose a topic to start learning
             </p>
 
-            {/* Welcome Section */}
-            <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="h-8 w-8 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                  Choose a Grammar Topic
-                </h2>
-                <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                  Explore our comprehensive grammar collection organized by categories. 
-                  Use the navigation panel to discover topics tailored for your learning journey.
-                </p>
-              </div>
-            </div>
-
-            {/* Category Preview Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Clean Category Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {grammarCategories.slice(0, 6).map((category) => (
                 <div
                   key={category.id}
-                  className="group bg-white rounded-xl border border-gray-200 p-6 hover:border-blue-300 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                  className="bg-white border border-gray-200 rounded-lg p-5 hover:border-blue-300 hover:shadow-sm transition-all duration-200"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="text-3xl group-hover:scale-110 transition-transform duration-300">
-                      {category.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-700 transition-colors">
-                        {category.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-3 leading-relaxed">
-                        {category.description}
-                      </p>
-                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full">
-                        <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
-                        <span className="text-sm text-blue-700 font-medium">
-                          {category.items.length} topics
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="text-2xl mb-3">{category.icon}</div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    {category.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {category.description}
+                  </p>
+                  <span className="text-sm text-blue-600 font-medium">
+                    {category.items.length} topics
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Grammar Navigation for Homepage */}
-        <GrammarNavigation />
+        {/* Simplified Navigation */}
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-500">
+            Use the sidebar to explore all available topics
+          </p>
+        </div>
       </GrammarLayout>
     );
   }
@@ -1453,264 +1432,25 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
     return `${day}/${month}/${year}`;
   };
 
-  // Create sections for Table of Contents based on available data
+  // Simplified sections - focus on essentials only
   const sections = [
     ...(getProperty(grammarData, "definition")
-      ? [
-          {
-            id: "definition",
-            title: "Definition",
-            icon: <BookOpen className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "theory")
-      ? [
-          {
-            id: "theory",
-            title: "Theory & Overview",
-            icon: <BookOpen className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "formation")
-      ? [
-          {
-            id: "formation",
-            title: "Formation",
-            icon: <FileText className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "forms")
-      ? [
-          {
-            id: "forms",
-            title: "Forms",
-            icon: <CheckSquare className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "spellingRules")
-      ? [
-          {
-            id: "spelling-rules",
-            title: "Spelling Rules",
-            icon: <FileText className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "usage")
-      ? [
-          {
-            id: "usage",
-            title: "Usage",
-            icon: <Users className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "advancedUsagePatterns")
-      ? [
-          {
-            id: "advanced-usage",
-            title: "Advanced Usage Patterns",
-            icon: <TrendingUp className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "culturalAndContextualUsage")
-      ? [
-          {
-            id: "cultural-usage",
-            title: "Cultural & Contextual Usage",
-            icon: <Globe className="h-4 w-4" />,
-          },
-        ]
+      ? [{ id: "definition", title: "Definition", icon: <BookOpen className="h-4 w-4" /> }]
       : []),
     ...(getProperty(grammarData, "examples")
-      ? [
-          {
-            id: "examples",
-            title: "Examples",
-            icon: <Lightbulb className="h-4 w-4" />,
-          },
-        ]
+      ? [{ id: "examples", title: "Examples", icon: <Lightbulb className="h-4 w-4" /> }]
       : []),
-    ...(getProperty(grammarData, "extendedExamples")
-      ? [
-          {
-            id: "extended-examples",
-            title: "Extended Examples",
-            icon: <Lightbulb className="h-4 w-4" />,
-          },
-        ]
+    ...(getProperty(grammarData, "usage")
+      ? [{ id: "usage", title: "Usage", icon: <Users className="h-4 w-4" /> }]
+      : []),
+    ...(getProperty(grammarData, "forms")
+      ? [{ id: "forms", title: "Forms", icon: <CheckSquare className="h-4 w-4" /> }]
       : []),
     ...(getProperty(grammarData, "commonMistakes")
-      ? [
-          {
-            id: "common-mistakes",
-            title: "Common Mistakes",
-            icon: <AlertTriangle className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "pronunciationGuide")
-      ? [
-          {
-            id: "pronunciation",
-            title: "Pronunciation Guide",
-            icon: <Volume2 className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "keyPoints")
-      ? [
-          {
-            id: "key-points",
-            title: "Key Points",
-            icon: <Target className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "practiceExerciseTypes")
-      ? [
-          {
-            id: "practice-exercises",
-            title: "Practice Exercise Types",
-            icon: <GraduationCap className="h-4 w-4" />,
-          },
-        ]
+      ? [{ id: "common-mistakes", title: "Common Mistakes", icon: <AlertTriangle className="h-4 w-4" /> }]
       : []),
     ...(getProperty(grammarData, "learningTips")
-      ? [
-          {
-            id: "learning-tips",
-            title: "Learning Tips",
-            icon: <Lightbulb className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "learningProgression")
-      ? [
-          {
-            id: "learning-progression",
-            title: "Learning Progression",
-            icon: <TrendingUp className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "cefrLevelBreakdown")
-      ? [
-          {
-            id: "cefr-levels",
-            title: "CEFR Level Breakdown",
-            icon: <BarChart3 className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "comprehensiveErrorAnalysis")
-      ? [
-          {
-            id: "error-analysis",
-            title: "Comprehensive Error Analysis",
-            icon: <AlertTriangle className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "notes")
-      ? [
-          {
-            id: "notes",
-            title: "Important Notes",
-            icon: <FileText className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "citations") ||
-    getProperty(grammarData, "references") ||
-    (getProperty(grammarData, "definition") &&
-      getProperty(getProperty(grammarData, "definition"), "references"))
-      ? [
-          {
-            id: "references",
-            title: getProperty(grammarData, "citations")
-              ? "Citations"
-              : "References",
-            icon: <FileText className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "progressiveDifficulty")
-      ? [
-          {
-            id: "progressive-difficulty",
-            title: "Progressive Difficulty Exercises",
-            icon: <TrendingUp className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "pedagogicalSequencing")
-      ? [
-          {
-            id: "pedagogical-sequencing",
-            title: "Pedagogical Sequencing",
-            icon: <GraduationCap className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "crossLinguisticAnalysis")
-      ? [
-          {
-            id: "cross-linguistic",
-            title: "Cross-Linguistic Analysis",
-            icon: <Globe className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "corpusBasedUsage")
-      ? [
-          {
-            id: "corpus-usage",
-            title: "Corpus-Based Usage Data",
-            icon: <Database className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "digitalLearningIntegration")
-      ? [
-          {
-            id: "digital-learning",
-            title: "Digital Learning Integration",
-            icon: <Settings className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "researchBasedInsights")
-      ? [
-          {
-            id: "research-insights",
-            title: "Research-Based Insights",
-            icon: <Database className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "assessmentFramework")
-      ? [
-          {
-            id: "assessment-framework",
-            title: "Assessment Framework",
-            icon: <BarChart3 className="h-4 w-4" />,
-          },
-        ]
-      : []),
-    ...(getProperty(grammarData, "futureDirections")
-      ? [
-          {
-            id: "future-directions",
-            title: "Future Directions",
-            icon: <Rocket className="h-4 w-4" />,
-          },
-        ]
+      ? [{ id: "learning-tips", title: "Tips", icon: <Target className="h-4 w-4" /> }]
       : []),
   ];
 
@@ -1722,80 +1462,59 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
         }
       `}</style>
       <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
-        {/* Table of Contents - Mobile */}
-        <div className="lg:hidden mb-8">
-          <div className="bg-white border border-gray-200 rounded-xl p-4">
-            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Quick Navigation
-            </h3>
-            <div className="grid grid-cols-2 gap-2">
-              {sections.slice(0, 6).map((section) => (
+        {/* Simplified Mobile Navigation */}
+        <div className="lg:hidden mb-6">
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <h3 className="font-medium text-gray-900 mb-3">Contents</h3>
+            <div className="space-y-1">
+              {sections.slice(0, 4).map((section) => (
                 <a
                   key={section.id}
                   href={`#${section.id}`}
-                  className="flex items-center gap-2 p-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="block p-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                 >
-                  {section.icon}
-                  <span className="truncate">{section.title}</span>
+                  {section.title}
                 </a>
               ))}
+              {sections.length > 4 && (
+                <div className="text-xs text-gray-500 p-2">
+                  +{sections.length - 4} more sections
+                </div>
+              )}
             </div>
-            {sections.length > 6 && (
-              <div className="mt-3 pt-3 border-t border-gray-200 text-center">
-                <span className="text-xs text-gray-500">
-                  +{sections.length - 6} more sections below
-                </span>
-              </div>
-            )}
           </div>
         </div>
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">
-          {/* Header */}
+          {/* Simplified Header */}
           <div className="mb-8">
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
-              <span className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full">
-                <span>{grammarInfo.category.icon}</span>
-                <span>{grammarInfo.category.title}</span>
-              </span>
-              <span className="text-gray-300">/</span>
-              <span className="text-blue-600 font-medium">{grammarInfo.item.title}</span>
+            {/* Simple Breadcrumb */}
+            <div className="text-sm text-gray-500 mb-4">
+              {grammarInfo.category.title} / {grammarInfo.item.title}
             </div>
 
-            {/* Title and Description */}
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-4">
-                {formatTitle(grammarKey)}
-              </h1>
+            {/* Clean Title */}
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              {formatTitle(grammarKey)}
+            </h1>
 
-              {grammarInfo.item.description && (
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                  {grammarInfo.item.description}
-                </p>
-              )}
-            </div>
+            {grammarInfo.item.description && (
+              <p className="text-lg text-gray-600 mb-6">
+                {grammarInfo.item.description}
+              </p>
+            )}
 
-            {/* Metadata */}
-            <div className="flex flex-wrap justify-center gap-4 mb-6">
-              {getProperty(grammarData, "created") && (
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full text-sm text-gray-600">
-                  <Calendar className="h-4 w-4" />
-                  <span>Created: {formatDate(getProperty(grammarData, "created"))}</span>
-                </div>
-              )}
-              {getProperty(grammarData, "updated") && (
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full text-sm text-gray-600">
-                  <Clock className="h-4 w-4" />
-                  <span>Updated: {formatDate(getProperty(grammarData, "updated"))}</span>
-                </div>
-              )}
-              <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2">
-                <Target className="h-3 w-3" />
+            {/* Essential Info Only */}
+            <div className="flex gap-3 mb-6">
+              <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
                 {grammarInfo.category.title}
-              </Badge>
+              </span>
+              {getProperty(grammarData, "updated") && (
+                <span className="text-sm text-gray-500">
+                  Updated: {formatDate(getProperty(grammarData, "updated"))}
+                </span>
+              )}
             </div>
 
             {/* Data Overview */}
@@ -1842,350 +1561,32 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
             </div>
           </div>
 
-          {/* Content Sections */}
+          {/* Essential Content Sections Only */}
           <div className="space-y-8">
-            {/* Definition */}
-            {(getProperty(grammarData, "definition") ||
-              getProperty(grammarData, "modalVerbsDefinition") ||
-              getProperty(grammarData, "articlesDefinition") ||
-              getProperty(grammarData, "causativeFormDefinition") ||
-              getProperty(grammarData, "infinitivesDefinition") ||
-              getProperty(grammarData, "passiveVoiceDefinition") ||
-              getProperty(grammarData, "inversionDefinition") ||
-              getProperty(
-                grammarData,
-                "tenseShiftInReportedSpeechDefinition"
-              ) ||
-              getProperty(grammarData, "subjectVerbAgreementDefinition") ||
-              getProperty(grammarData, "possessivesDefinition") ||
-              getProperty(grammarData, "conjunctionDefinition") ||
-              getProperty(grammarData, "comparisonsDefinition") ||
-              getProperty(grammarData, "futureInThePastDefinition") ||
-              getProperty(grammarData, "equalityComparisonDefinition") ||
-              getProperty(grammarData, "quantifiersDefinition") ||
-              getProperty(grammarData, "prepositionDefinition") ||
-              getProperty(grammarData, "repeatedComparativeDefinition") ||
-              getProperty(grammarData, "reflexivePronounsDefinition") ||
-              getProperty(grammarData, "reportedQuestionsDefinition") ||
-              getProperty(grammarData, "extendedDefinition") ||
-              getProperty(grammarData, "academicDefinition")) && (
-              <section id="definition" className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-200">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                    <BookOpen className="h-5 w-5 text-white" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900">Definition</h2>
-                </div>
-                <div className="space-y-6">
-                  {/* Get the definition data */}
-                  {(() => {
-                    const definition =
-                      getProperty(grammarData, "definition") ||
-                      getProperty(grammarData, "modalVerbsDefinition") ||
-                      getProperty(grammarData, "articlesDefinition") ||
-                      getProperty(grammarData, "causativeFormDefinition") ||
-                      getProperty(grammarData, "infinitivesDefinition") ||
-                      getProperty(grammarData, "passiveVoiceDefinition") ||
-                      getProperty(grammarData, "inversionDefinition") ||
-                      getProperty(
-                        grammarData,
-                        "tenseShiftInReportedSpeechDefinition"
-                      ) ||
-                      getProperty(
-                        grammarData,
-                        "subjectVerbAgreementDefinition"
-                      ) ||
-                      getProperty(grammarData, "possessivesDefinition") ||
-                      getProperty(grammarData, "conjunctionDefinition") ||
-                      getProperty(grammarData, "comparisonsDefinition") ||
-                      getProperty(grammarData, "futureInThePastDefinition") ||
-                      getProperty(
-                        grammarData,
-                        "equalityComparisonDefinition"
-                      ) ||
-                      getProperty(grammarData, "quantifiersDefinition") ||
-                      getProperty(grammarData, "prepositionDefinition") ||
-                      getProperty(
-                        grammarData,
-                        "repeatedComparativeDefinition"
-                      ) ||
-                      getProperty(grammarData, "reflexivePronounsDefinition") ||
-                      getProperty(grammarData, "reportedQuestionsDefinition") ||
-                      getProperty(grammarData, "extendedDefinition") ||
-                      getProperty(grammarData, "academicDefinition");
-
-                    console.log("Definition data:", definition);
-
-                    if (!definition) return null;
-
-                    /* Check if definition is a string or object */
-                    if (typeof definition === "string") {
-                      return (
+            
+            {/* Definition - Simplified */}
+            {getProperty(grammarData, "definition") && (
+              <section id="definition" className="bg-white border border-gray-200 rounded-lg p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Definition</h2>
+                <div className="prose max-w-none">
+                  {typeof getProperty(grammarData, "definition") === "string" ? (
+                    <p className="text-gray-700 leading-relaxed">
+                      {getProperty(grammarData, "definition")}
+                    </p>
+                  ) : (
+                    <div className="space-y-4">
+                      {getProperty(getProperty(grammarData, "definition"), "simple") && (
                         <p className="text-gray-700 leading-relaxed">
-                          {definition}
+                          {getProperty(getProperty(grammarData, "definition"), "simple")}
                         </p>
-                      );
-                    }
-
-                    return (
-                      <>
-                        {/* Handle concept-based definition structure */}
-                        {getProperty(definition, "concept") && (
-                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-blue-400 shadow-sm">
-                            <h3 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
-                              <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
-                              Concept
-                            </h3>
-                            <p className="text-gray-700 leading-relaxed">
-                              {getProperty(definition, "concept")}
-                            </p>
-                          </div>
-                        )}
-
-                        {getProperty(definition, "importance") && (
-                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-emerald-400 shadow-sm">
-                            <h3 className="font-semibold text-emerald-800 mb-3 flex items-center gap-2">
-                              <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
-                              Importance
-                            </h3>
-                            <p className="text-gray-700 leading-relaxed">
-                              {getProperty(definition, "importance")}
-                            </p>
-                          </div>
-                        )}
-
-                        {getProperty(definition, "corePrinciple") && (
-                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-purple-400 shadow-sm">
-                            <h3 className="font-semibold text-purple-800 mb-3 flex items-center gap-2">
-                              <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
-                              Core Principle
-                            </h3>
-                            <p className="text-gray-700 leading-relaxed">
-                              {getProperty(definition, "corePrinciple")}
-                            </p>
-                          </div>
-                        )}
-
-                        {getProperty(definition, "scope") && (
-                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-orange-400 shadow-sm">
-                            <h3 className="font-semibold text-orange-800 mb-3 flex items-center gap-2">
-                              <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
-                              Scope
-                            </h3>
-                            <p className="text-gray-700 leading-relaxed">
-                              {getProperty(definition, "scope")}
-                            </p>
-                          </div>
-                        )}
-
-                        {getProperty(definition, "linguisticBackground") && (
-                          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-indigo-400 shadow-sm">
-                            <h3 className="font-semibold text-indigo-800 mb-3 flex items-center gap-2">
-                              <span className="w-2 h-2 bg-indigo-400 rounded-full"></span>
-                              Linguistic Background
-                            </h3>
-                            <p className="text-gray-700 leading-relaxed">
-                              {getProperty(definition, "linguisticBackground")}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Handle standardized definition structure */}
-                        {getProperty(definition, "simple") && (
-                          <>
-                            {/* Simple Definition */}
-                            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-blue-400 shadow-sm">
-                              <h3 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
-                                <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
-                                Simple Definition
-                              </h3>
-                              <p className="text-gray-700 leading-relaxed">
-                                {getProperty(definition, "simple")}
-                              </p>
-                            </div>
-
-                            {/* Extended Definition */}
-                            {getProperty(definition, "extended") && (
-                              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-emerald-400 shadow-sm">
-                                <h3 className="font-semibold text-emerald-800 mb-3 flex items-center gap-2">
-                                  <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
-                                  Extended Definition
-                                </h3>
-                                <p className="text-gray-700 leading-relaxed">
-                                  {getProperty(definition, "extended")}
-                                </p>
-                              </div>
-                            )}
-
-                            {/* Academic Definition */}
-                            {getProperty(definition, "academic") && (
-                              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-purple-400 shadow-sm">
-                                <h3 className="font-semibold text-purple-800 mb-3 flex items-center gap-2">
-                                  <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
-                                  Academic Definition
-                                </h3>
-                                <p className="text-gray-700 leading-relaxed">
-                                  {getProperty(definition, "academic")}
-                                </p>
-                              </div>
-                            )}
-
-                            {/* Linguistic Definition */}
-                            {getProperty(definition, "linguistic") && (
-                              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-orange-400 shadow-sm">
-                                <h3 className="font-semibold text-orange-800 mb-3 flex items-center gap-2">
-                                  <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
-                                  Linguistic Definition
-                                </h3>
-                                <p className="text-gray-700 leading-relaxed">
-                                  {getProperty(definition, "linguistic")}
-                                </p>
-                              </div>
-                            )}
-
-                            {/* Comprehensive Definition */}
-                            {getProperty(definition, "comprehensive") && (
-                              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-l-4 border-red-400 shadow-sm">
-                                <h3 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
-                                  <span className="w-2 h-2 bg-red-400 rounded-full"></span>
-                                  Comprehensive Definition
-                                </h3>
-                                <p className="text-gray-700 leading-relaxed">
-                                  {getProperty(definition, "comprehensive")}
-                                </p>
-                              </div>
-                            )}
-                          </>
-                        )}
-
-                        {/* Handle custom definition structure (core_concept, grammatical_status, etc.) */}
-                        {getProperty(definition, "core_concept") && (
-                          <>
-                            {/* Core Concept */}
-                            <div className="p-4 bg-white rounded-lg border-l-4 border-blue-400">
-                              <h3 className="font-semibold text-gray-800 mb-2">
-                                Core Concept
-                              </h3>
-                              <p className="text-gray-700">
-                                {getProperty(definition, "core_concept")}
-                              </p>
-                            </div>
-
-                            {/* Grammatical Status */}
-                            {getProperty(definition, "grammatical_status") && (
-                              <div className="p-4 bg-white rounded-lg border-l-4 border-green-400">
-                                <h3 className="font-semibold text-gray-800 mb-2">
-                                  Grammatical Status
-                                </h3>
-                                <p className="text-gray-700">
-                                  {getProperty(
-                                    definition,
-                                    "grammatical_status"
-                                  )}
-                                </p>
-                              </div>
-                            )}
-
-                            {/* Linguistic Significance */}
-                            {getProperty(
-                              definition,
-                              "linguistic_significance"
-                            ) && (
-                              <div className="p-4 bg-white rounded-lg border-l-4 border-purple-400">
-                                <h3 className="font-semibold text-gray-800 mb-2">
-                                  Linguistic Significance
-                                </h3>
-                                <p className="text-gray-700">
-                                  {getProperty(
-                                    definition,
-                                    "linguistic_significance"
-                                  )}
-                                </p>
-                              </div>
-                            )}
-
-                            {/* Detailed Explanation */}
-                            {getProperty(
-                              definition,
-                              "detailed_explanation"
-                            ) && (
-                              <div className="p-4 bg-white rounded-lg border-l-4 border-orange-400">
-                                <h3 className="font-semibold text-gray-800 mb-2">
-                                  Detailed Explanation
-                                </h3>
-                                <p className="text-gray-700">
-                                  {getProperty(
-                                    definition,
-                                    "detailed_explanation"
-                                  )}
-                                </p>
-                              </div>
-                            )}
-
-                            {/* Formation Patterns */}
-                            {getProperty(definition, "formation_patterns") &&
-                              Array.isArray(
-                                getProperty(definition, "formation_patterns")
-                              ) && (
-                                <div className="p-4 bg-white rounded-lg border-l-4 border-indigo-400">
-                                  <h3 className="font-semibold text-gray-800 mb-2">
-                                    Formation Patterns
-                                  </h3>
-                                  <ul className="text-gray-700 space-y-1">
-                                    {(
-                                      getProperty(
-                                        definition,
-                                        "formation_patterns"
-                                      ) as string[]
-                                    ).map((pattern, index) => (
-                                      <li
-                                        key={index}
-                                        className="flex items-start gap-2"
-                                      >
-                                        <span className="text-indigo-600 font-bold">
-                                          •
-                                        </span>
-                                        <span>{pattern}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-
-                            {/* Usage Contexts */}
-                            {getProperty(definition, "usage_contexts") &&
-                              Array.isArray(
-                                getProperty(definition, "usage_contexts")
-                              ) && (
-                                <div className="p-4 bg-white rounded-lg border-l-4 border-teal-400">
-                                  <h3 className="font-semibold text-gray-800 mb-2">
-                                    Usage Contexts
-                                  </h3>
-                                  <ul className="text-gray-700 space-y-1">
-                                    {(
-                                      getProperty(
-                                        definition,
-                                        "usage_contexts"
-                                      ) as string[]
-                                    ).map((context, index) => (
-                                      <li
-                                        key={index}
-                                        className="flex items-start gap-2"
-                                      >
-                                        <span className="text-teal-600 font-bold">
-                                          •
-                                        </span>
-                                        <span>{context}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                          </>
-                        )}
-                      </>
-                    );
-                  })()}
+                      )}
+                      {getProperty(getProperty(grammarData, "definition"), "concept") && (
+                        <p className="text-gray-700 leading-relaxed">
+                          {getProperty(getProperty(grammarData, "definition"), "concept")}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </section>
             )}
@@ -5321,61 +4722,52 @@ const GrammarPage: React.FC<GrammarPageProps> = ({ params }) => {
           </div>
 
           {/* Navigation to related topics */}
-          {/* Related Topics */}
-          <div className="mt-16 pt-8 border-t border-gray-200">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                Explore Related Topics
-              </h3>
-              <p className="text-gray-600">
-                Continue your grammar journey with these related concepts
-              </p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          {/* Minimal Related Topics */}
+          <div className="mt-12 pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Related Topics
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {grammarInfo.category.items
                 .filter((item) => item.key !== grammarKey)
-                .slice(0, 8)
+                .slice(0, 6)
                 .map((item) => (
                   <a
                     key={item.key}
                     href={`/grammar/${item.key
                       .toLowerCase()
                       .replace(/_/g, "-")}`}
-                    className="group p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                    className="p-3 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg transition-colors"
                   >
-                    <div className="text-sm font-medium text-gray-700 group-hover:text-blue-700 transition-colors">
+                    <div className="text-sm font-medium text-gray-700 hover:text-blue-700">
                       {item.title.replace(/_/g, " ")}
                     </div>
-                    <div className="w-full h-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mt-2 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                   </a>
                 ))}
             </div>
           </div>
         </div>
 
-        {/* Table of Contents Sidebar - Desktop */}
-        <div className="hidden lg:block w-80 flex-shrink-0">
+        {/* Simplified Sidebar */}
+        <div className="hidden lg:block w-64 flex-shrink-0">
           <div className="sticky top-24">
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Table of Contents
-              </h3>
-              <nav className="space-y-2">
-                {sections.map((section) => (
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+              <h3 className="font-medium text-gray-900 mb-3">Contents</h3>
+              <nav className="space-y-1">
+                {sections.slice(0, 8).map((section) => (
                   <a
                     key={section.id}
                     href={`#${section.id}`}
-                    className="flex items-center gap-3 p-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 group"
+                    className="block p-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                   >
-                    <span className="text-blue-400 group-hover:text-blue-600 transition-colors">
-                      {section.icon}
-                    </span>
-                    <span className="group-hover:translate-x-1 transition-transform duration-200">
-                      {section.title}
-                    </span>
+                    {section.title}
                   </a>
                 ))}
+                {sections.length > 8 && (
+                  <div className="text-xs text-gray-500 p-2">
+                    +{sections.length - 8} more
+                  </div>
+                )}
               </nav>
             </div>
           </div>
