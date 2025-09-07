@@ -1,35 +1,26 @@
-"use client";
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Target } from "lucide-react";
 
 interface GrammarPageHeaderProps {
-  grammarKey: string;
   grammarInfo: any;
+  grammarKey: string;
   grammarData: any;
+  formatTitle: (key: string) => string;
+  formatDate: (dateString: string) => string;
   getProperty: (obj: any, prop: string) => any;
 }
 
 const GrammarPageHeader: React.FC<GrammarPageHeaderProps> = ({
-  grammarKey,
   grammarInfo,
+  grammarKey,
   grammarData,
+  formatTitle,
+  formatDate,
   getProperty,
 }) => {
-  const formatTitle = (key: string) => {
-    return key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-  };
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "N/A";
-    const [day, month, year] = dateString.split("-");
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <div className="mb-8">
-      {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
         <span>{grammarInfo.category.icon}</span>
         <span>{grammarInfo.category.title}</span>
@@ -37,12 +28,10 @@ const GrammarPageHeader: React.FC<GrammarPageHeaderProps> = ({
         <span className="text-blue-600">{grammarInfo.item.title}</span>
       </div>
 
-      {/* Title */}
       <h1 className="text-4xl font-bold text-gray-900 mb-4">
         {formatTitle(grammarKey)}
       </h1>
 
-      {/* Description */}
       {grammarInfo.item.description && (
         <p className="text-xl text-gray-600 mb-6">
           {grammarInfo.item.description}

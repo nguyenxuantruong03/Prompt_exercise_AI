@@ -15,6 +15,10 @@ import {
   Circle,
   ChevronUp,
   ChevronDown,
+  ChevronRight,
+  List,
+  Minimize2,
+  Maximize2,
 } from "lucide-react";
 import {
   getAvailableGrammarCategories,
@@ -43,7 +47,59 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
     new Set()
   );
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCompactMode, setIsCompactMode] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set()
+  );
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Group sections into categories for better organization
+  const groupedSections = React.useMemo(() => {
+    const groups = {
+      core: [] as Section[],
+      content: [] as Section[],
+      examples: [] as Section[],
+      advanced: [] as Section[],
+      reference: [] as Section[],
+    };
+
+    sections.forEach((section) => {
+      const title = section.title.toLowerCase();
+      if (
+        title.includes("definition") ||
+        title.includes("cefr") ||
+        title.includes("level")
+      ) {
+        groups.core.push(section);
+      } else if (title.includes("example") || title.includes("pronunciation")) {
+        groups.examples.push(section);
+      } else if (
+        title.includes("advanced") ||
+        title.includes("research") ||
+        title.includes("corpus")
+      ) {
+        groups.advanced.push(section);
+      } else if (title.includes("reference") || title.includes("citation")) {
+        groups.reference.push(section);
+      } else {
+        groups.content.push(section);
+      }
+    });
+
+    return groups;
+  }, [sections]);
+
+  const toggleSectionExpansion = (groupName: string) => {
+    setExpandedSections((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(groupName)) {
+        newSet.delete(groupName);
+      } else {
+        newSet.add(groupName);
+      }
+      return newSet;
+    });
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -111,6 +167,16 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
 
       if (currentActiveSection && currentActiveSection !== activeSection) {
         setActiveSection(currentActiveSection);
+
+        // Auto-expand group containing active section
+        const activeGroupName = Object.entries(groupedSections).find(
+          ([_, groupSections]) =>
+            groupSections.some((s) => s.id === currentActiveSection)
+        )?.[0];
+
+        if (activeGroupName && !expandedSections.has(activeGroupName)) {
+          setExpandedSections((prev) => new Set([...prev, activeGroupName]));
+        }
       }
     };
 
@@ -118,7 +184,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
     handleScroll(); // Initial check
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [sections, activeSection]);
+  }, [sections, activeSection, groupedSections, expandedSections]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -169,15 +235,28 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
           </Button>
         </div>
 
-        {/* Quick Action Button */}
-        <div className="mt-3">
+        {/* Quick Action Buttons */}
+        <div className="mt-3 flex gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => scrollToSection("overview")}
-            className="w-full text-xs"
+            className="flex-1 text-xs"
           >
-            Jump to Data Overview
+            Overview
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsCompactMode(!isCompactMode)}
+            className="px-2"
+            title={isCompactMode ? "Expand view" : "Compact view"}
+          >
+            {isCompactMode ? (
+              <Maximize2 className="h-3 w-3" />
+            ) : (
+              <Minimize2 className="h-3 w-3" />
+            )}
           </Button>
         </div>
 
@@ -210,20 +289,22 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
 
       {/* Content */}
       {!isCollapsed && (
-        <div className="p-2 max-h-96 overflow-y-auto">
-          <div className="space-y-1">
-            {sections.map((section, index) => {
-              const isActive = activeSection === section.id;
-              const isCompleted = completedSections.has(section.id);
+        <div className="p-2 max-h-[calc(100vh-300px)] overflow-y-auto">
+          {isCompactMode ? (
+            // Compact flat list
+            <div className="space-y-1">
+              {sections.map((section) => {
+                const isActive = activeSection === section.id;
+                const isCompleted = completedSections.has(section.id);
 
-              return (
-                <div key={section.id}>
+                return (
                   <Button
+                    key={section.id}
                     variant="ghost"
                     onClick={() => scrollToSection(section.id)}
                     className={`w-full justify-start p-2 h-auto text-left hover:bg-gray-50 ${
                       isActive
-                        ? "bg-blue-50 text-blue-700 border-l-4 border-blue-500"
+                        ? "bg-blue-50 text-blue-700 border-l-2 border-blue-500"
                         : isCompleted
                         ? "text-green-700 bg-green-50"
                         : "text-gray-700"
@@ -232,58 +313,166 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
                     <div className="flex items-center gap-2 w-full">
                       <div className="flex-shrink-0">
                         {isCompleted ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-600" />
+                          <CheckCircle2 className="h-3 w-3 text-green-600" />
                         ) : isActive ? (
-                          <div className="h-4 w-4 rounded-full bg-blue-500 animate-pulse" />
+                          <div className="h-3 w-3 rounded-full bg-blue-500" />
                         ) : (
-                          <Circle className="h-4 w-4 text-gray-400" />
+                          <Circle className="h-3 w-3 text-gray-400" />
                         )}
                       </div>
+                      <span className="text-xs font-medium truncate">
+                        {section.title}
+                      </span>
+                    </div>
+                  </Button>
+                );
+              })}
+            </div>
+          ) : (
+            // Grouped tree structure
+            <div className="space-y-3">
+              {Object.entries(groupedSections).map(
+                ([groupName, groupSections]) => {
+                  if (groupSections.length === 0) return null;
 
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        {section.icon}
-                        <span className="text-sm font-medium truncate">
-                          {section.title}
-                        </span>
-                      </div>
+                  const isExpanded = expandedSections.has(groupName);
+                  const groupTitle =
+                    {
+                      core: "📚 Core Concepts",
+                      content: "📖 Main Content",
+                      examples: "💡 Examples & Practice",
+                      advanced: "🎓 Advanced Topics",
+                      reference: "📝 References",
+                    }[groupName] || groupName;
 
-                      {isActive && (
-                        <div className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
-                          Reading
+                  const hasActiveSection = groupSections.some(
+                    (s) => activeSection === s.id
+                  );
+                  const completedCount = groupSections.filter((s) =>
+                    completedSections.has(s.id)
+                  ).length;
+
+                  return (
+                    <div
+                      key={groupName}
+                      className="border border-gray-100 rounded-lg"
+                    >
+                      {/* Group Header */}
+                      <Button
+                        variant="ghost"
+                        onClick={() => toggleSectionExpansion(groupName)}
+                        className={`w-full justify-between p-3 h-auto rounded-lg ${
+                          hasActiveSection
+                            ? "bg-blue-50 border-blue-200"
+                            : "hover:bg-gray-50"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">
+                            {groupTitle}
+                          </span>
+                          <Badge variant="secondary" className="text-xs">
+                            {completedCount}/{groupSections.length}
+                          </Badge>
+                        </div>
+                        <ChevronRight
+                          className={`h-4 w-4 transition-transform ${
+                            isExpanded ? "rotate-90" : ""
+                          }`}
+                        />
+                      </Button>
+
+                      {/* Group Content */}
+                      {isExpanded && (
+                        <div className="p-2 pt-0 space-y-1">
+                          {groupSections.map((section) => {
+                            const isActive = activeSection === section.id;
+                            const isCompleted = completedSections.has(
+                              section.id
+                            );
+
+                            return (
+                              <div key={section.id} className="ml-2">
+                                <Button
+                                  variant="ghost"
+                                  onClick={() => scrollToSection(section.id)}
+                                  className={`w-full justify-start p-2 h-auto text-left hover:bg-gray-50 rounded ${
+                                    isActive
+                                      ? "bg-blue-50 text-blue-700 border-l-2 border-blue-500"
+                                      : isCompleted
+                                      ? "text-green-700 bg-green-50"
+                                      : "text-gray-700"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2 w-full">
+                                    <div className="flex-shrink-0">
+                                      {isCompleted ? (
+                                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                      ) : isActive ? (
+                                        <div className="h-4 w-4 rounded-full bg-blue-500 animate-pulse" />
+                                      ) : (
+                                        <Circle className="h-4 w-4 text-gray-400" />
+                                      )}
+                                    </div>
+
+                                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                                      <div className="w-4 h-4 flex-shrink-0">
+                                        {section.icon}
+                                      </div>
+                                      <span className="text-sm font-medium truncate">
+                                        {section.title}
+                                      </span>
+                                    </div>
+
+                                    {isActive && (
+                                      <div className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                                        Reading
+                                      </div>
+                                    )}
+                                  </div>
+                                </Button>
+
+                                {/* Subsections */}
+                                {section.subsections && isActive && (
+                                  <div className="ml-6 mt-1 space-y-1">
+                                    {section.subsections.map((subsection) => (
+                                      <Button
+                                        key={subsection.id}
+                                        variant="ghost"
+                                        onClick={() =>
+                                          scrollToSection(subsection.id)
+                                        }
+                                        className="w-full justify-start p-1 h-auto text-left text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <div className="w-2 h-2 rounded-full bg-gray-300" />
+                                          {subsection.title}
+                                        </div>
+                                      </Button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
-                  </Button>
-
-                  {/* Subsections */}
-                  {section.subsections && isActive && (
-                    <div className="ml-6 mt-1 space-y-1">
-                      {section.subsections.map((subsection) => (
-                        <Button
-                          key={subsection.id}
-                          variant="ghost"
-                          onClick={() => scrollToSection(subsection.id)}
-                          className="w-full justify-start p-1 h-auto text-left text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-gray-300" />
-                            {subsection.title}
-                          </div>
-                        </Button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                  );
+                }
+              )}
+            </div>
+          )}
         </div>
       )}
 
       {/* Footer */}
       <div className="p-3 border-t border-gray-200 bg-gray-50 rounded-b-lg">
         <div className="flex items-center justify-between text-xs text-gray-500">
-          <span>Scroll to navigate</span>
+          <span className="flex items-center gap-1">
+            <List className="h-3 w-3" />
+            {isCompactMode ? "Compact" : "Grouped"} view
+          </span>
           <span className="flex items-center gap-1">
             <Target className="h-3 w-3" />
             Auto-highlight

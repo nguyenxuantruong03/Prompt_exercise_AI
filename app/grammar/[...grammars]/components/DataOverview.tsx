@@ -1,32 +1,18 @@
-"use client";
-
 import React from "react";
 
-interface DataCompletenessOverviewProps {
+interface DataOverviewProps {
   grammarData: any;
   getProperty: (obj: any, prop: string) => any;
 }
 
-const DataCompletenessOverview: React.FC<DataCompletenessOverviewProps> = ({
+const DataOverview: React.FC<DataOverviewProps> = ({
   grammarData,
   getProperty,
 }) => {
   const dataKeys = [
-    {
-      key: "theory",
-      label: "📚 Theory",
-      color: "bg-blue-100 text-blue-800",
-    },
-    {
-      key: "forms",
-      label: "📝 Forms",
-      color: "bg-green-100 text-green-800",
-    },
-    {
-      key: "usage",
-      label: "🎯 Usage",
-      color: "bg-purple-100 text-purple-800",
-    },
+    { key: "theory", label: "📚 Theory", color: "bg-blue-100 text-blue-800" },
+    { key: "forms", label: "📝 Forms", color: "bg-green-100 text-green-800" },
+    { key: "usage", label: "🎯 Usage", color: "bg-purple-100 text-purple-800" },
     {
       key: "examples",
       label: "💡 Examples",
@@ -134,9 +120,9 @@ const DataCompletenessOverview: React.FC<DataCompletenessOverviewProps> = ({
     },
   ];
 
-  const availableCount = dataKeys.filter((item) =>
-    getProperty(grammarData, item.key)
-  ).length;
+  const availableData = dataKeys.filter(({ key }) =>
+    getProperty(grammarData, key)
+  );
 
   return (
     <div
@@ -161,11 +147,11 @@ const DataCompletenessOverview: React.FC<DataCompletenessOverviewProps> = ({
         ))}
       </div>
       <div className="mt-3 text-sm text-blue-700">
-        <strong>Data Completeness:</strong> {availableCount} out of{" "}
+        <strong>Data Completeness:</strong> {availableData.length} out of{" "}
         {dataKeys.length} comprehensive sections available
       </div>
     </div>
   );
 };
 
-export default DataCompletenessOverview;
+export default DataOverview;

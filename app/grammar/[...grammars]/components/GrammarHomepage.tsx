@@ -1,18 +1,14 @@
-"use client";
-
 import React from "react";
 import { BookOpen } from "lucide-react";
-import GrammarNavigation from "@/components/navigation/GrammarNavigation";
 import { grammarCategories } from "@/lib/static/grammars/grammar-categories";
+import GrammarNavigation from "@/components/navigation/GrammarNavigation";
 
 const GrammarHomepage: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center py-16">
         <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Grammar Guide
-        </h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">Grammar Guide</h1>
         <p className="text-xl text-gray-600 mb-8">
           Master English grammar with our comprehensive collection
         </p>
@@ -23,8 +19,8 @@ const GrammarHomepage: React.FC = () => {
             Choose a topic to get started
           </h2>
           <p className="text-gray-600">
-            Use the navigation panel on the right to explore available
-            grammar topics, organized by category for easy learning.
+            Use the navigation panel on the right to explore available grammar
+            topics, organized by category for easy learning.
           </p>
         </div>
 
@@ -53,8 +49,8 @@ const GrammarHomepage: React.FC = () => {
             Choose a topic to get started
           </h2>
           <p className="text-gray-600">
-            Use the navigation panel on the right to explore available
-            grammar topics, organized by category for easy learning.
+            Use the navigation panel on the right to explore available grammar
+            topics, organized by category for easy learning.
           </p>
         </div>
       </div>
